@@ -31,7 +31,7 @@ apiRoutes.get("/", async function (req, res, next) {
 	res.json('Welcome to KTH Biblioteket bookingsystem api')
 });
 
-apiRoutes.get("/entry/:system/:id", Controller.read)
+apiRoutes.get("/entry/:system/:id", Controller.readEntry)
 
 app.use(process.env.API_ROUTES_PATH, apiRoutes);
 
