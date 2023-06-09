@@ -1,5 +1,5 @@
 # KTHB Bookingsystem api
-API mot Bookingsystem
+API mot Bookingsystem(grupprum etc)
 
 ##
 
