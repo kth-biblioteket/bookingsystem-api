@@ -25,9 +25,10 @@ async function getRoomsAvailability(req, res) {
         let rooms = await eventModel.readRooms(req.params.system, req.params.area_id)
 
         //Gå igenom alla rum och kontrollera om status för aktuell timme
+        let roomjson;
+        //for(i=0 ; i < rooms.length; i++) {
         rooms.forEach(async room => {
             let status;
-            let roomjson;
             //Hämta aktuellt rums bokningar för angiven timme(via timestamp)
             let roombooking = await eventModel.readBookingsForHour(req.params.system, room.id, req.params.timestamp)
             //om timmen i timestamp är utanför öppettider(<$area->morningstarts ELLER >$area->eveningends) för rummen så returnera status unavailable
