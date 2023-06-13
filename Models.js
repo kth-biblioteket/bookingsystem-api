@@ -40,7 +40,7 @@ const readArea = (system, id) => {
 const readRooms = (system, area_id) => {
     return new Promise(function (resolve, reject) {
         const connection = database.createConnection(system);
-        const query = `SELECT * FROM mrbs_rooms
+        const query = `SELECT * FROM mrbs_room
                      WHERE area_id = ?`;
         params = [area_id]
         connection.query(query, params, (err, results, fields) => {
