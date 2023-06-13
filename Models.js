@@ -68,7 +68,7 @@ const readBookingsForHour = (system, room_id, timestamp) => {
                      AND mrbs_entry.end_time > ?`;
         params = [room_id, timestamp, timestamp]
 
-        console.log(mysql.format(query, params));
+        console.log(database.format(query, params));
         connection.query(query, params, (err, results, fields) => {
             if (err) {
               console.error('Error executing query:', err);
