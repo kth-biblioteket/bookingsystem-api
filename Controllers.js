@@ -36,6 +36,7 @@ async function getRoomsAvailability(req, res) {
             if(timestamphour < area.morningstarts || timestamphour > area.eveningends ){
                 roomjson.push({'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : true, 'status' : 'unavailable'});
             } else {
+                console.log(roombooking)
                 if (!roombooking){
                     roomjson.push({'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : true, 'status' : 'unavailable'});
                 } else {

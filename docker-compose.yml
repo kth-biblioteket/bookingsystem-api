@@ -5,6 +5,8 @@ services:
     container_name: bookingsystem-api
     image: ghcr.io/kth-biblioteket/bookingsystem-api:${REPO_TYPE}
     restart: always
+    environment:
+      - TZ=${TZ}
     env_file:
       - ./bookingsystem-api.env
     labels:
