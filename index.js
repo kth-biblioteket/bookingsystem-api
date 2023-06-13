@@ -33,7 +33,7 @@ apiRoutes.get("/", async function (req, res, next) {
 
 apiRoutes.get("/entry/:system/:id", Controller.readEntry)
 
-apiRoutes.get("/roomsavailability/:system/:area_id", Controller.getRoomsAvailability)
+apiRoutes.get("/roomsavailability/:system/:area_id/:timestamp", Controller.getRoomsAvailability)
 
 app.use(process.env.API_ROUTES_PATH, apiRoutes);
 
