@@ -26,18 +26,17 @@ async function getRoomsAvailability(req, res) {
 
         //Gå igenom alla rum och kontrollera om status för aktuell timme
         let roomjson;
-        //for(i=0 ; i < rooms.length; i++) {
-        rooms.forEach(async room => {
+        for(i=0 ; i < rooms.length; i++) {
             let status;
             //Hämta aktuellt rums bokningar för angiven timme(via timestamp)
-            let roombooking = await eventModel.readBookingsForHour(req.params.system, room.id, req.params.timestamp)
+            let roombooking = await eventModel.readBookingsForHour(req.params.system, rooms[i].id, req.params.timestamp)
             //om timmen i timestamp är utanför öppettider(<$area->morningstarts ELLER >$area->eveningends) för rummen så returnera status unavailable
             let timestamphour = new Date(1590127200 * 1000).toLocaleTimeString("sv-SE")
             if(timestamphour < area.morningstarts || timestamphour > area.eveningends ){
-                roomjson = {'room_number' : room.room_number, 'room_name' : room.room_name, 'disabled' : room.disabled, 'availability' : true, 'status' : 'unavailable'};
+                roomjson = {'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : true, 'status' : 'unavailable'};
             } else {
                 if (roombooking){
-                    roomjson = {'room_number' : room.room_number, 'room_name' : room.room_name, 'disabled' : room.disabled, 'availability' : true, 'status' : 'unavailable'};
+                    roomjson = {'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : true, 'status' : 'unavailable'};
                 } else {
                     //4=preliminär, 0=kvitterad
                     if (roombooking.status == 0 ){
@@ -57,10 +56,10 @@ async function getRoomsAvailability(req, res) {
                             status = "tentative";
                         }
                     }
-                    roomjson = {'room_number' : room.room_number, 'room_name' : room.room_name, 'disabled' : room.disabled, 'availability' : false, 'status' : status};
+                    roomjson = {'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : false, 'status' : status};
                 }
             }
-        });
+        }
 
         res.send(roomjson)
     } catch (err) {
