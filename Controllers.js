@@ -25,7 +25,7 @@ async function getRoomsAvailability(req, res) {
         let rooms = await eventModel.readRooms(req.params.system, req.params.area_id)
 
         //Gå igenom alla rum och kontrollera om status för aktuell timme
-        rooms.array.forEach(async room => {
+        rooms.forEach(async room => {
             let status;
             let roomjson;
             //Hämta aktuellt rums bokningar för angiven timme(via timestamp)
