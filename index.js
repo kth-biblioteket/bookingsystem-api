@@ -33,6 +33,8 @@ apiRoutes.get("/", async function (req, res, next) {
 
 apiRoutes.get("/entry/:system/:id", Controller.readEntry)
 
+apiRoutes.get("/roomsavailability/:system/:area_id", Controller.getRoomsAvailability)
+
 app.use(process.env.API_ROUTES_PATH, apiRoutes);
 
 const server = app.listen(process.env.PORT || 3002, function () {
