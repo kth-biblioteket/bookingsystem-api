@@ -25,7 +25,7 @@ async function getRoomsAvailability(req, res) {
         let rooms = await eventModel.readRooms(req.params.system, req.params.area_id)
 
         //Gå igenom alla rum och kontrollera om status för aktuell timme
-        let roomjson;
+        let roomjson = [];
         for(i=0 ; i < rooms.length; i++) {
             let status;
             //Hämta aktuellt rums bokningar för angiven timme(via timestamp)
@@ -33,10 +33,10 @@ async function getRoomsAvailability(req, res) {
             //om timmen i timestamp är utanför öppettider(<$area->morningstarts ELLER >$area->eveningends) för rummen så returnera status unavailable
             let timestamphour = new Date(1590127200 * 1000).toLocaleTimeString("sv-SE")
             if(timestamphour < area.morningstarts || timestamphour > area.eveningends ){
-                roomjson = {'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : true, 'status' : 'unavailable'};
+                roomjson.push({'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : true, 'status' : 'unavailable'});
             } else {
                 if (roombooking){
-                    roomjson = {'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : true, 'status' : 'unavailable'};
+                    roomjson.push({'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : true, 'status' : 'unavailable'});
                 } else {
                     //4=preliminär, 0=kvitterad
                     if (roombooking.status == 0 ){
@@ -56,7 +56,7 @@ async function getRoomsAvailability(req, res) {
                             status = "tentative";
                         }
                     }
-                    roomjson = {'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : false, 'status' : status};
+                    roomjson.push({'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : false, 'status' : status});
                 }
             }
         }
