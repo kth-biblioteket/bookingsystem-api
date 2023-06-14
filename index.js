@@ -23,7 +23,6 @@ app.use(cookieParser());
 const socketIo = require("socket.io");
 
 //const whitelist = process.env.CORS_WHITELIST.split(", "); 
-console.log(whitelist)
 //['http://localhost', 'https://apps.lib.kth.se', 'https://apps-ref.lib.kth.se', 'https://www.kth.se']
 //app.use(cors({origin: whitelist}));
 
