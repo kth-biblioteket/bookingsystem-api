@@ -40,8 +40,6 @@ async function getRoomsAvailability(req, res) {
                     roombookings.forEach(row => {
                         roombookingrow = row;     
                     });
-                    console.log(roombookingrow.id)
-                    console.log(roombookingrow.room_id)
                     //4=preliminär, 0=kvitterad
                     if (roombookingrow.status == 0 ){
                         // om type = "C"(closed) så returnera status unavailable
