@@ -109,8 +109,8 @@ async function confirmBooking(req, res) {
                     } else {
                         view = "week";
                     }
+                    res.render('pages/confirmbooking', {confirmdata: {'message' : 'confirmnotfound', 'confirmation' : confirmation, 'name': EntryWithRoomAndArea_row.room_name, 'start_time' : EntryWithRoomAndArea_row.start_time, 'end_time' : EntryWithRoomAndArea_row.end_time, 'area_id' : EntryWithRoomAndArea_row.area_id, 'view' : view}})
                 })
-                res.render('pages/confirmbooking', {confirmdata: {'message' : 'confirmnotfound', 'confirmation' : confirmation, 'name': EntryWithRoomAndArea_row.room_name, 'start_time' : EntryWithRoomAndArea_row.start_time, 'end_time' : EntryWithRoomAndArea_row.end_time, 'area_id' : EntryWithRoomAndArea_row.area_id, 'view' : view}})
             });
         } else {
             //Hittar ingen bokning med angiven kod
