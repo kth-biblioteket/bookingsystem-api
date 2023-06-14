@@ -106,7 +106,7 @@ async function confirmBooking(req, res) {
                     //let updateEntry = await eventModel.updateEntryConfirm(req.params.system, entryrow.confirmation_code)
                 } else {
                     confirmation = false;
-                    res.render('pages/confirmbooking', {confirmdata: {'message' : 'confirmnotfound', 'notinconfirmperiod' : confirmation, 'name': '', 'start_time' :'', 'end_time' : '', 'area_id' : '', 'view' : 'day' }})
+                    res.render('pages/confirmbooking', {confirmdata: {'message' : 'notinconfirmperiod', 'confirmation' : confirmation, 'name': '', 'start_time' :'', 'end_time' : '', 'area_id' : '', 'view' : 'day' }})
                 }
                 //
                 let EntryWithRoomAndArea = await eventModel.readEntryWithRoomAndArea(req.params.system, entryrow.id)
