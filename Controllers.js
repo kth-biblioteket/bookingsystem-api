@@ -53,7 +53,6 @@ async function getRoomsAvailability(req, res) {
                     }
                     if (roombookingrow.status == 4 ){
                         //om inom 15 minuter före/efter starttiden
-                        //if ($timestamp > $roomwithroomname->start_time -15*60 && $timestamp < $roomwithroomname->start_time +15*60) {
                         if (req.params.timestamp < roombookingrow.start_time +15*60) {
                             status = "tobeconfirmed";
                         } else {
@@ -63,7 +62,7 @@ async function getRoomsAvailability(req, res) {
                     console.log('status: ' + status)
                     roomjson.push({'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : false, 'status' : status});
                 } else {
-                    roomjson.push({'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : true, 'status' : 'unavailable'});
+                    roomjson.push({'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : true, 'status' : 'available'});
                 }
             }
         }
