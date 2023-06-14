@@ -24,7 +24,7 @@
                 <span><%= confirmdata.confirmheader %></span>
             </div>
             <% if(confirmdata.confirmation) { %>
-                <div class="lead"><%= t('confirmmessage_1') %> <%= confirmdata.name %> <%= t('confirmmessage_2') %> <%= confirmdata.start_time + '-' + confirmdata.end_time %> <%= t('confirmmessage_3') %></div>
+                <div class="lead"><%= i18next.t('confirmmessage_1') %> <%= confirmdata.name %> <%= i18next.t('confirmmessage_2') %> <%= confirmdata.start_time + '-' + confirmdata.end_time %> <%= i18next.t('confirmmessage_3') %></div>
             <% } else { %>
                 <div class="lead"><%= confirmdata.message %></div>
             <% } %>
