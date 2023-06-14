@@ -6,6 +6,9 @@ const axios = require('axios')
 const fs = require("fs");
 const path = require('path');
 
+const i18next = require('i18next');
+const backend = require('i18next-fs-backend');
+
 
 async function readEntry(req, res) {
     try {
@@ -79,7 +82,7 @@ async function confirmBooking(req, res) {
     let confirmation = true;
 
     const language = req.query.lang || 'en';
-    
+
     i18next.changeLanguage(language);
 
 
