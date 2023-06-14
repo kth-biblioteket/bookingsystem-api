@@ -22,6 +22,8 @@ app.use(cookieParser());
 
 const socketIo = require("socket.io");
 
+app.set("view engine", "ejs");
+
 const whitelist = process.env.CORS_WHITELIST.split(", "); 
 app.use(cors({origin: whitelist}));
 
@@ -34,6 +36,8 @@ apiRoutes.get("/", async function (req, res, next) {
 apiRoutes.get("/entry/:system/:id", Controller.readEntry)
 
 apiRoutes.get("/roomsavailability/:system/:area_id/:timestamp", Controller.getRoomsAvailability)
+
+apiRoutes.get("/entry/:system/:confirmation_code", Controller.confirmBooking)
 
 app.use(process.env.API_ROUTES_PATH, apiRoutes);
 
