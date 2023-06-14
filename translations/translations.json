@@ -1,0 +1,40 @@
+{
+    "en": {
+        "welcome" : "Welcome to our application",
+        "somethingwrong" : "Something went wrong",
+        "confirmcodemissing" : "Confirmationcode missing",
+        "bookingnotfound" : "Booking not found",
+        "roomnotfound" : "Room not found",
+        "confirmnotfound" : "Your booking was not found or is already confirmed",
+        "notinconfirmperiod" : "You can only confirm the booking from 15 minutes before to 15 minutes after the starting time!",
+        "confirmheader" : "Confirmation - Group study rooms/Reading Studio",
+        "confirmmessage_1" : "Your booking for ",
+        "confirmmessage_2" : " at ",
+        "confirmmessage_3" : " is now confirmed.",
+        "home" : "Home",
+        "kthb" : "KTH Library",
+        "mybookings" : "My bookings",
+        "help" : "Help",
+        "kthblink" : "https://www.kth.se/en/kthb",
+        "kthlink" : "https://www.kth.se/en"
+    },
+    "sv": {
+        "welcome" : "Välkommen.",
+        "somethingwrong" : "Någonting gick fel",
+        "confirmcodemissing" : "Confirmationcode saknas",
+        "bookingnotfound" : "Bokningen hittades inte",
+        "roomnotfound" : "Rummet hittades inte",
+        "confirmnotfound" : "Din bokning hittades inte eller är redan kvitterad",
+        "notinconfirmperiod" : "Du kan endast kvittera din bokning från 15 minuter före till 15 minuter efter starttiden!",
+        "confirmheader" : "Kvittering - Grupprum/Lässtudio",
+        "confirmmessage_1" : "Din bokning för ",
+        "confirmmessage_2" : "  ",
+        "confirmmessage_3" : " är nu kvitterad.",
+        "home" : "Hem",
+        "kthb" : "KTH Biblioteket",
+        "mybookings" : "Mina bokningar",
+        "help" : "Hjälp",
+        "kthblink" : "https://www.kth.se/kthb",
+        "kthlink" : "https://www.kth.se"
+    }
+  }

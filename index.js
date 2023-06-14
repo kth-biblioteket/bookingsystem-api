@@ -12,6 +12,8 @@ const fs = require("fs");
 const path = require('path');
 const Controller = require('./Controllers');
 const cookieParser = require("cookie-parser");
+const i18next = require('i18next');
+const backend = require('i18next-fs-backend');
 
 const app = express();
 
@@ -21,6 +23,14 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 const socketIo = require("socket.io");
+
+i18next.use(backend).init({
+    lng: 'en',
+    fallbackLng: 'en',
+    backend: {
+      loadPath: 'translations/{{lng}}.json'
+    }
+});
 
 app.set("view engine", "ejs");
 

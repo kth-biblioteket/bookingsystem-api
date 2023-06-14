@@ -77,7 +77,11 @@ kvitterad: status = 0
 */
 async function confirmBooking(req, res) {
     let confirmation = true;
-    console.log(req.params.confirmation_code)
+
+    const language = req.query.lang || 'en';
+    
+    i18next.changeLanguage(language);
+
 
     if(!req.params.confirmation_code)
     {
