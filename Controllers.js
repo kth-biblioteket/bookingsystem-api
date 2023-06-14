@@ -24,7 +24,7 @@ async function getRoomsAvailability(req, res) {
         //Hämta rum för arean
         let rooms = await eventModel.readRooms(req.params.system, req.params.area_id)
 
-        //Gå igenom alla rum och kontrollera om status för aktuell timme
+        //Gå igenom alla rum och kontrollera status för aktuell timme
         let roomjson = [];
         for(i=0 ; i < rooms.length; i++) {
             let status;
@@ -33,7 +33,6 @@ async function getRoomsAvailability(req, res) {
             let roombookingrow
             //om timmen i timestamp är utanför öppettider(<$area->morningstarts ELLER >$area->eveningends) för rummen så returnera status unavailable
             let timestamphour = new Date(req.params.timestamp * 1000).toLocaleTimeString("sv-SE", { hour: "2-digit"})
-            console.log('timestamphour: ' + timestamphour)
             if(timestamphour < area.morningstarts || timestamphour > area.eveningends ){
                 roomjson.push({'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : true, 'status' : 'unavailable'});
             } else {
@@ -41,10 +40,11 @@ async function getRoomsAvailability(req, res) {
                     roombookings.forEach(row => {
                         roombookingrow = row;     
                     });
-                    console.log(roombookingrow)
+                    console.log(roombookingrow.id)
+                    console.log(roombookingrow.room_id)
                     //4=preliminär, 0=kvitterad
                     if (roombookingrow.status == 0 ){
-                        // om type = "C" så returnera status unavailable
+                        // om type = "C"(closed) så returnera status unavailable
                         if (roombookingrow.type == 'C' ){
                             status = "unavailable";
                         } else {
@@ -59,7 +59,6 @@ async function getRoomsAvailability(req, res) {
                             status = "tentative";
                         }
                     }
-                    console.log('status: ' + status)
                     roomjson.push({'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : false, 'status' : status});
                 } else {
                     roomjson.push({'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : true, 'status' : 'available'});
