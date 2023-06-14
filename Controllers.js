@@ -27,17 +27,21 @@ async function getRoomsAvailability(req, res) {
         //Gå igenom alla rum och kontrollera om status för aktuell timme
         let roomjson = [];
         let status;
+        let roombookingrow
         for(i=0 ; i < rooms.length; i++) {
             //Hämta aktuellt rums bokningar för angiven timme(via timestamp)
             let roombooking = await eventModel.readBookingsForHour(req.params.system, rooms[i].id, req.params.timestamp)
+            Object.keys(roombooking).forEach(function(key) {
+                roombookingrow = roombooking[key];     
+            });
             //om timmen i timestamp är utanför öppettider(<$area->morningstarts ELLER >$area->eveningends) för rummen så returnera status unavailable
             let timestamphour = new Date(req.params.timestamp * 1000).toLocaleTimeString("sv-SE", { hour: "2-digit"})
             console.log('timestamphour: ' + timestamphour)
             if(timestamphour < area.morningstarts || timestamphour > area.eveningends ){
                 roomjson.push({'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : true, 'status' : 'unavailable'});
             } else {
-                console.log(roombooking)
-                if (!roombooking){
+                console.log(roombookingrow)
+                if (!roombookingrow){
                     roomjson.push({'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : true, 'status' : 'unavailable'});
                 } else {
                     //4=preliminär, 0=kvitterad
