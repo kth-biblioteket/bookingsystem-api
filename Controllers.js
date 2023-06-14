@@ -96,6 +96,7 @@ async function confirmBooking(req, res) {
                     //Uppdatera bokning till confirmed(status = noll)
                     entryrow.status = 0;
                     entryrow.confirmation_code = null;
+                    //let updateEntry = await eventModel.updateEntryConfirm(req.params.system, entryrow.confirmation_code)
                 } else {
                     confirmation = false;
                     res.render('pages/confirmbooking', {confirmdata: {'message' : 'confirmnotfound', 'notinconfirmperiod' : confirmation, 'name': '', 'start_time' :'', 'end_time' : '', 'area_id' : '', 'view' : 'day' }})
