@@ -37,7 +37,7 @@ apiRoutes.get("/entry/:system/:id", Controller.readEntry)
 
 apiRoutes.get("/roomsavailability/:system/:area_id/:timestamp", Controller.getRoomsAvailability)
 
-apiRoutes.get("/entry/:system/:confirmation_code", Controller.confirmBooking)
+apiRoutes.get("/entry/confirm/:system/:confirmation_code", Controller.confirmBooking)
 
 app.use(process.env.API_ROUTES_PATH, apiRoutes);
 
