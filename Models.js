@@ -74,6 +74,7 @@ const readBookingsForHour = (system, room_id, timestamp) => {
               reject(err.message)
             }
             const successMessage = "Success"
+            connection.end();
             resolve(results);
           });
     })
