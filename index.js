@@ -28,7 +28,8 @@ const socketIo = require("socket.io");
 
 const whitelist = ['http://localhost', 'https://apps.lib.kth.se', 'https://apps-ref.lib.kth.se', 'https://www.kth.se']
   
-app.use(cors({origin: whitelist}));
+//app.use(cors({origin: whitelist}));
+app.use(cors())
 
 const apiRoutes = express.Router();
 
