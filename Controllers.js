@@ -75,8 +75,9 @@ Funktion som kvitterar en preliminär bokning utifrån den token som satts på b
 preliminär: status = 4
 kvitterad: status = 0
 */
-async function confirmBooking(req, res, $confirmation_code) {
+async function confirmBooking(req, res) {
     let confirmation = true;
+    console.log(req.params.confirmation_code)
 
     if(!req.params.confirmation_code)
     {
