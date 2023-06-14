@@ -27,36 +27,38 @@ async function getRoomsAvailability(req, res) {
         //Gå igenom alla rum och kontrollera om status för aktuell timme
         let roomjson = [];
         let status;
-        let roombookingrow
         for(i=0 ; i < rooms.length; i++) {
             //Hämta aktuellt rums bokningar för angiven timme(via timestamp)
             let roombooking = await eventModel.readBookingsForHour(req.params.system, rooms[i].id, req.params.timestamp)
-            Object.keys(roombooking).forEach(function(key) {
-                roombookingrow = roombooking[key];     
-            });
             //om timmen i timestamp är utanför öppettider(<$area->morningstarts ELLER >$area->eveningends) för rummen så returnera status unavailable
             let timestamphour = new Date(req.params.timestamp * 1000).toLocaleTimeString("sv-SE", { hour: "2-digit"})
             console.log('timestamphour: ' + timestamphour)
             if(timestamphour < area.morningstarts || timestamphour > area.eveningends ){
                 roomjson.push({'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : true, 'status' : 'unavailable'});
             } else {
-                console.log(roombookingrow)
-                if (!roombookingrow){
+                
+                if (!roombooking){
                     roomjson.push({'room_number' : rooms[i].room_number, 'room_name' : rooms[i].room_name, 'disabled' : rooms[i].disabled, 'availability' : true, 'status' : 'unavailable'});
                 } else {
+                    
+                    let roombookingrow
+                    roombooking.forEach(row => {
+                        roombookingrow = row;     
+                    });
+                    console.log(roombookingrow)
                     //4=preliminär, 0=kvitterad
-                    if (roombooking.status == 0 ){
+                    if (roombookingrow.status == 0 ){
                         // om type = "C" så returnera status unavailable
-                        if (roombooking.type == 'C' ){
+                        if (roombookingrow.type == 'C' ){
                             status = "unavailable";
                         } else {
                             status = "confirmed";
                         } 
                     }
-                    if (roombooking.status == 4 ){
+                    if (roombookingrow.status == 4 ){
                         //om inom 15 minuter före/efter starttiden
                         //if ($timestamp > $roomwithroomname->start_time -15*60 && $timestamp < $roomwithroomname->start_time +15*60) {
-                        if (req.params.timestamp < roombooking.start_time +15*60) {
+                        if (req.params.timestamp < roombookingrow.start_time +15*60) {
                             status = "tobeconfirmed";
                         } else {
                             status = "tentative";
