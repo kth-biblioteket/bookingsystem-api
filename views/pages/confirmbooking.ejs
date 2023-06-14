@@ -25,8 +25,7 @@
             </div>
             <% if(confirmdata.confirmation) { %>
                 <div class="lead"><%= 'You booking for ' %> <%= confirmdata.name %> <%= ' at ' %> <%= confirmdata.start_time + '-' + confirmdata.end_time %> <%= ' is now confirmed ' %></div>
-            <% } %>
-            <% else { %>
+            <% } else { %>
                 <div class="lead"><%= confirmdata.message %></div>
             <% } %>
         </div>
