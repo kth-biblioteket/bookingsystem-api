@@ -81,8 +81,6 @@ async function confirmBooking(req, res) {
 
     const lang = req.query.lang || 'en';
 
-    console.log(translations[lang])
-
     if(!req.params.confirmation_code)
     {
         confirmation = false;
@@ -103,7 +101,19 @@ async function confirmBooking(req, res) {
                     //let updateEntry = await eventModel.updateEntryConfirm(req.params.system, entryrow.confirmation_code)
                 } else {
                     confirmation = false;
-                    res.render('pages/confirmbooking', {confirmdata: {'message' : 'notinconfirmperiod', 'confirmation' : confirmation, 'name': '', 'start_time' :'', 'end_time' : '', 'area_id' : '', 'view' : 'day' }})
+                    res.render('pages/confirmbooking', {
+                        confirmdata: {
+                            'message' : 'notinconfirmperiod', 
+                            'confirmation' : confirmation, 
+                            'name': '', 
+                            'start_time' :'', 
+                            'end_time' : '', 
+                            'area_id' : '', 
+                            'view' : 'day',
+                            'lang' : lang,
+                            'translations': translations[lang]
+                        }
+                    })
                 }
                 //
                 let EntryWithRoomAndArea = await eventModel.readEntryWithRoomAndArea(req.params.system, entryrow.id)
@@ -130,12 +140,36 @@ async function confirmBooking(req, res) {
         } else {
             //Hittar ingen bokning med angiven kod
             confirmation = false;
-            res.render('pages/confirmbooking', {confirmdata: {'message' : 'confirmnotfound', 'confirmation' : confirmation, 'name': '', 'start_time' :'', 'end_time' : '', 'area_id' : '', 'view' : 'day' }})
+            res.render('pages/confirmbooking', {
+                confirmdata: {
+                    'message' : 'confirmnotfound', 
+                    'confirmation' : confirmation, 
+                    'name': '', 
+                    'start_time' :'', 
+                    'end_time' : '', 
+                    'area_id' : '', 
+                    'view' : 'day',
+                    'lang' : lang,
+                    'translations': translations[lang]
+                }
+            })
         }
     }
     catch (err) {
         confirmation = false;
-        res.render('pages/confirmbooking', {confirmdata: {'message' : err.message, 'confirmation' : confirmation, 'name': '', 'start_time' :'', 'end_time' : '', 'area_id' : '', 'view' : 'day' }})
+        res.render('pages/confirmbooking', {
+            confirmdata: {
+                'message' : err.message, 
+                'confirmation' : confirmation, 
+                'name': '', 
+                'start_time' :'', 
+                'end_time' : '', 
+                'area_id' : '', 
+                'view' : 'day',
+                'lang' : lang,
+                'translations': translations[lang]
+            }
+        })
     }
 }
 
