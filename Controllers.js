@@ -81,6 +81,8 @@ async function confirmBooking(req, res) {
 
     const lang = req.query.lang || 'en';
 
+    console.log(translations[lang])
+
     if(!req.params.confirmation_code)
     {
         confirmation = false;
