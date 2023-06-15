@@ -99,6 +99,31 @@ async function confirmBooking(req, res) {
                     entryrow.status = 0;
                     entryrow.confirmation_code = null;
                     //let updateEntry = await eventModel.updateEntryConfirm(req.params.system, entryrow.confirmation_code)
+                    //
+                    let EntryWithRoomAndArea = await eventModel.readEntryWithRoomAndArea(req.params.system, entryrow.id)
+                    let view = 'day'
+                    EntryWithRoomAndArea.forEach(EntryWithRoomAndArea_row => {
+                        if (EntryWithRoomAndArea_row.default_view == 0) {
+                            view = "day";
+                        } else {
+                            view = "week";
+                        }
+                        let start_time_time = new Date(EntryWithRoomAndArea_row.start_time * 1000).toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit"})
+                        let start_time_date = new Date(EntryWithRoomAndArea_row.start_time * 1000).toLocaleDateString("sv-SE")
+                        let end_time_time = new Date(EntryWithRoomAndArea_row.end_time * 1000).toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit"})
+                        let end_time_date = new Date(EntryWithRoomAndArea_row.end_time * 1000).toLocaleDateString("sv-SE")
+                        res.render('pages/confirmbooking', {confirmdata: {
+                            'message' : 'confirmnotfound', 
+                            'confirmation' : confirmation, 
+                            'name': EntryWithRoomAndArea_row.room_name, 
+                            'start_time' : start_time_date + ' ' + start_time_time, 
+                            'end_time' : end_time_date + ' ' + end_time_time,
+                            'area_id' : EntryWithRoomAndArea_row.area_id, 
+                            'view' : view,
+                            'lang' : lang,
+                            'translations': translations[lang]
+                        }})
+                    })
                 } else {
                     confirmation = false;
                     res.render('pages/confirmbooking', {
@@ -115,31 +140,6 @@ async function confirmBooking(req, res) {
                         }
                     })
                 }
-                //
-                let EntryWithRoomAndArea = await eventModel.readEntryWithRoomAndArea(req.params.system, entryrow.id)
-                let view = 'day'
-                EntryWithRoomAndArea.forEach(EntryWithRoomAndArea_row => {
-                    if (EntryWithRoomAndArea_row.default_view == 0) {
-                        view = "day";
-                    } else {
-                        view = "week";
-                    }
-                    let start_time_time = new Date(EntryWithRoomAndArea_row.start_time * 1000).toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit"})
-                    let start_time_date = new Date(EntryWithRoomAndArea_row.start_time * 1000).toLocaleDateString("sv-SE")
-                    let end_time_time = new Date(EntryWithRoomAndArea_row.end_time * 1000).toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit"})
-                    let end_time_date = new Date(EntryWithRoomAndArea_row.end_time * 1000).toLocaleDateString("sv-SE")
-                    res.render('pages/confirmbooking', {confirmdata: {
-                        'message' : 'confirmnotfound', 
-                        'confirmation' : confirmation, 
-                        'name': EntryWithRoomAndArea_row.room_name, 
-                        'start_time' : start_time_date + ' ' + start_time_time, 
-                        'end_time' : end_time_date + ' ' + end_time_time,
-                        'area_id' : EntryWithRoomAndArea_row.area_id, 
-                        'view' : view,
-                        'lang' : lang,
-                        'translations': translations[lang]
-                    }})
-                })
             });
         } else {
             //Hittar ingen bokning med angiven kod
