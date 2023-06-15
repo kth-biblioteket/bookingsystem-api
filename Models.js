@@ -123,6 +123,25 @@ const readEntryWithRoomAndArea = (system, id) => {
     })
 };
 
+//Hämta area via ID och system 
+const updateEntryConfirmed = (system, confirmation_code) => {
+  return new Promise(function (resolve, reject) {
+      const connection = database.createConnection(system);
+      const query = `UPDATE mrbs_entry
+                      SET status = 0, confirmation_code = null
+                      WHERE confirmation_code = ?`;
+      params = [confirmation_code]
+      connection.query(query, params, (err, results, fields) => {
+          if (err) {
+            console.error('Error executing query:', err);
+            reject(err.message)
+          }
+          const successMessage = "Success"
+          resolve(results);
+        });
+  })
+};
+
 module.exports = {
     readEntry,
     readArea,
