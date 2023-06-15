@@ -208,6 +208,26 @@ const updateEntryConfirmationCode = (system, id, confirmation_code) => {
   })
 };
 
+//Uppdatera entry med confirmationcode via ID och system 
+const updateEntrySetReminded = (system, id) => {
+  return new Promise(function (resolve, reject) {
+      const connection = database.createConnection(system);
+      const query = `UPDATE mrbs_entry
+                      SET reminded = 1
+                      WHERE id = ?`;
+      params = [id]
+      connection.query(query, params, (err, results, fields) => {
+          if (err) {
+            console.error('Error executing query:', err);
+            reject(err.message)
+          }
+          const successMessage = "Success"
+          connection.end();
+          resolve(results);
+        });
+  })
+};
+
 module.exports = {
     readEntry,
     readArea,
@@ -217,5 +237,6 @@ module.exports = {
     readEntryWithRoomAndArea,
     updateEntryConfirmed,
     readReminderBookings,
-    updateEntryConfirmationCode
+    updateEntryConfirmationCode,
+    updateEntrySetReminded
 };
