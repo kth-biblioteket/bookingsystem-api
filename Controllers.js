@@ -124,12 +124,16 @@ async function confirmBooking(req, res) {
                     } else {
                         view = "week";
                     }
+                    let start_time_time = new Date(EntryWithRoomAndArea_row.start_time * 1000).toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit"})
+                    let start_time_date = new Date(EntryWithRoomAndArea_row.start_time * 1000).toLocaleDateString("sv-SE")
+                    let end_time_time = new Date(EntryWithRoomAndArea_row.end_time * 1000).toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit"})
+                    let end_time_date = new Date(EntryWithRoomAndArea_row.end_time * 1000).toLocaleDateString("sv-SE")
                     res.render('pages/confirmbooking', {confirmdata: {
                         'message' : 'confirmnotfound', 
                         'confirmation' : confirmation, 
                         'name': EntryWithRoomAndArea_row.room_name, 
-                        'start_time' : EntryWithRoomAndArea_row.start_time, 
-                        'end_time' : EntryWithRoomAndArea_row.end_time, 
+                        'start_time' : start_time_date + ' ' + start_time_time, 
+                        'end_time' : end_time_date + ' ' + end_time_time,
                         'area_id' : EntryWithRoomAndArea_row.area_id, 
                         'view' : view,
                         'lang' : lang,
