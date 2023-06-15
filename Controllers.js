@@ -6,7 +6,7 @@ const axios = require('axios')
 const fs = require("fs");
 const path = require('path');
 
-const translations = require('translations/translations.json')
+const translations = require('./translations/translations.json')
 
 console.log(translations.en)
 
