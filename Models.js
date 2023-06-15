@@ -148,5 +148,6 @@ module.exports = {
     readRooms,
     readBookingsForHour,
     readEntryFromConfirmationCode,
-    readEntryWithRoomAndArea
+    readEntryWithRoomAndArea,
+    updateEntryConfirmed
 };
