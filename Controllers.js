@@ -6,9 +6,9 @@ const axios = require('axios')
 const fs = require("fs");
 const path = require('path');
 
-const i18next = require('i18next');
-const backend = require('i18next-fs-backend');
+const translations = require('translations/translations.json')
 
+console.log(translations.en)
 
 async function readEntry(req, res) {
     try {
@@ -81,10 +81,7 @@ kvitterad: status = 0
 async function confirmBooking(req, res) {
     let confirmation = true;
 
-    const language = req.query.lang || 'en';
-
-    i18next.changeLanguage(language);
-
+    const lang = req.query.lang || 'en';
 
     if(!req.params.confirmation_code)
     {
@@ -117,7 +114,17 @@ async function confirmBooking(req, res) {
                     } else {
                         view = "week";
                     }
-                    res.render('pages/confirmbooking', {confirmdata: {'message' : 'confirmnotfound', 'confirmation' : confirmation, 'name': EntryWithRoomAndArea_row.room_name, 'start_time' : EntryWithRoomAndArea_row.start_time, 'end_time' : EntryWithRoomAndArea_row.end_time, 'area_id' : EntryWithRoomAndArea_row.area_id, 'view' : view}})
+                    res.render('pages/confirmbooking', {confirmdata: {
+                        'message' : 'confirmnotfound', 
+                        'confirmation' : confirmation, 
+                        'name': EntryWithRoomAndArea_row.room_name, 
+                        'start_time' : EntryWithRoomAndArea_row.start_time, 
+                        'end_time' : EntryWithRoomAndArea_row.end_time, 
+                        'area_id' : EntryWithRoomAndArea_row.area_id, 
+                        'view' : view,
+                        'lang' : lang,
+                        'translations': translations[lang]
+                    }})
                 })
             });
         } else {
