@@ -13,6 +13,7 @@ const readEntry = (system, id) => {
               reject(err.message)
             }
             const successMessage = "Success"
+            connection.end();
             resolve(results);
           });
     })
@@ -31,6 +32,7 @@ const readArea = (system, id) => {
               reject(err.message)
             }
             const successMessage = "Success"
+            connection.end();
             resolve(results);
           });
     })
@@ -49,6 +51,7 @@ const readRooms = (system, area_id) => {
               reject(err.message)
             }
             const successMessage = "Success"
+            connection.end();
             resolve(results);
           });
     })
@@ -93,6 +96,7 @@ const readEntryFromConfirmationCode = (system, confirmation_code) => {
               reject(err.message)
             }
             const successMessage = "Success"
+            connection.end();
             resolve(results);
           });
     })
@@ -137,6 +141,49 @@ const updateEntryConfirmed = (system, confirmation_code) => {
             reject(err.message)
           }
           const successMessage = "Success"
+          connection.end();
+          resolve(results);
+        });
+  })
+};
+
+//Hämta bokningsstatus för ett rum via room_ID, timestamo och system 
+const readReminderBookings = (system, fromtime, totime, status, type) => {
+  return new Promise(function (resolve, reject) {
+      const connection = database.createConnection(system);
+      const query = `SELECT start_time, end_time, E.name, repeat_id,
+                        E.id AS entry_id, E.type,
+                        E.description AS entry_description, E.status,
+                        E.create_by AS entry_create_by,
+                        E.lang,
+                        room_number,
+                        room_name,
+                        room_name_english,
+                        area_map,
+                        area_map_image,
+                        mailtext,
+                        mailtext_en
+                      FROM mrbs_entry E
+                      INNER JOIN mrbs_room 
+                        ON mrbs_room.id = E.room_id
+                      INNER JOIN mrbs_area 
+                        ON mrbs_area.id = mrbs_room.area_id
+                      WHERE E.status IN (?)
+                      AND E.type = ?
+                      AND mrbs_area.reminder_email_enabled = true
+                      AND start_time >= ?
+                      AND start_time <= ?
+                      AND mrbs_area.area_type = $areatype
+                      AND (isnull(E.reminded) OR E.reminded = 0)`;
+      params = [status, type, fromtime, totime]
+
+      connection.query(query, params, (err, results, fields) => {
+          if (err) {
+            console.error('Error executing query:', err);
+            reject(err.message)
+          }
+          const successMessage = "Success"
+          connection.end();
           resolve(results);
         });
   })

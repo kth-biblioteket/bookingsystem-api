@@ -192,6 +192,15 @@ async function confirmBooking(req, res) {
     }
 }
 
+async function getReminderBookings(req, res) {
+    try {
+        let bookings = await eventModel.readReminderBookings(req.params.system, req.params.fromtime, req.params.totime, req.params.status, req.params.type )
+        res.send(bookings)
+    } catch (err) {
+        res.send("error: " + err)
+    }
+}
+
 function substrInBetween(whole_str, str1, str2) {
     if (whole_str.indexOf(str1) === -1 || whole_str.indexOf(str2) === -1) {
         return undefined;
@@ -210,6 +219,7 @@ module.exports = {
     readEntry,
     getRoomsAvailability,
     confirmBooking,
+    getReminderBookings,
     substrInBetween,
     truncate
 };

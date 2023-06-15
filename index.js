@@ -38,6 +38,8 @@ apiRoutes.get("/roomsavailability/:system/:area_id/:timestamp", Controller.getRo
 
 apiRoutes.get("/entry/confirm/:system/:confirmation_code", Controller.confirmBooking)
 
+apiRoutes.get("/reminderbookings/:system/:fromtime/:totime/:status/:type", Controller.getReminderBookings)
+
 app.use(process.env.API_ROUTES_PATH, apiRoutes);
 
 const server = app.listen(process.env.PORT || 3002, function () {
