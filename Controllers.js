@@ -8,8 +8,6 @@ const path = require('path');
 
 const translations = require('./translations/translations.json')
 
-console.log(translations.en)
-
 async function readEntry(req, res) {
     try {
         let result = await eventModel.readEntry(req.params.system, req.params.id)
