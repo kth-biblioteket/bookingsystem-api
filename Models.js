@@ -173,7 +173,6 @@ const readReminderBookings = (system, fromtime, totime, status, type) => {
                       AND mrbs_area.reminder_email_enabled = true
                       AND start_time >= ?
                       AND start_time <= ?
-                      AND mrbs_area.area_type = $areatype
                       AND (isnull(E.reminded) OR E.reminded = 0)`;
       params = [status, type, fromtime, totime]
 
