@@ -4,6 +4,7 @@
     <%- include('../partials/confirmbookinghead'); %>
 </head>
 <% message = confirmdata.message %>
+
 <body>
     <div>
         <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
@@ -26,7 +27,7 @@
             <% if(confirmdata.confirmation) { %>
                 <div class="lead"><%= confirmdata.translations.confirmmessage_1 %> <%= confirmdata.name %> <%= confirmdata.translations.confirmmessage_2 %> <%= confirmdata.start_time + '-' + confirmdata.end_time %> <%= confirmdata.translations.confirmmessage_3 %></div>
             <% } else { %>
-                <div class="lead"><%= confirmdata.translations[message] %></div>
+                <div class="lead"><%= confirmdata.translations.notinconfirmperiod %></div>
             <% } %>
         </div>
     </div>
