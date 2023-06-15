@@ -61,7 +61,7 @@ function verifyToken(req, res, next) {
             }
         });
     } else {
-        if (token != process.env.APIKEY) {
+        if (token != process.env.API_KEY_WRITE) {
             res.clearCookie("jwt")
             res.json({ success: false, message: 'Failed to authenticate token.' });
         } else {

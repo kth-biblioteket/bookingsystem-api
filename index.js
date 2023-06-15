@@ -40,6 +40,8 @@ apiRoutes.get("/entry/confirm/:system/:confirmation_code", Controller.confirmBoo
 
 apiRoutes.get("/reminderbookings/:system/:fromtime/:totime/:status/:type", Controller.getReminderBookings)
 
+apiRoutes.put("/entrysetconfirmcode/:system/:id/:confirmationcode", VerifyToken, Controller.updateEntryConfirmationCode)
+
 app.use(process.env.API_ROUTES_PATH, apiRoutes);
 
 const server = app.listen(process.env.PORT || 3002, function () {

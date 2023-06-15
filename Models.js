@@ -127,7 +127,7 @@ const readEntryWithRoomAndArea = (system, id) => {
     })
 };
 
-//Hämta area via ID och system 
+//Uppdatera entry till att vara confirmed via confirmationcode och system 
 const updateEntryConfirmed = (system, confirmation_code) => {
   return new Promise(function (resolve, reject) {
       const connection = database.createConnection(system);
@@ -188,6 +188,26 @@ const readReminderBookings = (system, fromtime, totime, status, type) => {
   })
 };
 
+//Uppdatera entry med confirmationcode via ID och system 
+const updateEntryConfirmationCode = (system, id, confirmation_code) => {
+  return new Promise(function (resolve, reject) {
+      const connection = database.createConnection(system);
+      const query = `UPDATE mrbs_entry
+                      SET confirmation_code = ?
+                      WHERE id = ?`;
+      params = [confirmation_code, id]
+      connection.query(query, params, (err, results, fields) => {
+          if (err) {
+            console.error('Error executing query:', err);
+            reject(err.message)
+          }
+          const successMessage = "Success"
+          connection.end();
+          resolve(results);
+        });
+  })
+};
+
 module.exports = {
     readEntry,
     readArea,
@@ -196,5 +216,6 @@ module.exports = {
     readEntryFromConfirmationCode,
     readEntryWithRoomAndArea,
     updateEntryConfirmed,
-    readReminderBookings
+    readReminderBookings,
+    updateEntryConfirmationCode
 };
