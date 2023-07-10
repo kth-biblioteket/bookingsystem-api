@@ -233,7 +233,7 @@ async function getOpeningHours(req, res) {
     console.log("getOpeningHours")
     const lang = req.query.lang || 'en';
     closedtext = translations[lang]["closedtext"]
-    let dayarray = [];
+    let dayarray = {};
     dayarray["monday"] = closedtext;
     dayarray["tuesday"] = closedtext;
     dayarray["wednesday"] = closedtext;
@@ -256,7 +256,7 @@ async function getOpeningHours(req, res) {
                 row["friday"] !== null ? dayarray["friday"] = row["friday"] : 0
                 row["saturday"] !== null ? dayarray["saturday"] = row["saturday"] : 0
                 row["sunday"] !== null ? dayarray["sunday"] = row["sunday"] : 0
-                res.json(dayarray)
+                res.send(dayarray)
             });
         } else {
             // Settings för rummets start och end saknas!
