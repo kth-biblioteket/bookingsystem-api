@@ -208,7 +208,7 @@ const updateEntryConfirmationCode = (system, id, confirmation_code) => {
   })
 };
 
-//Uppdatera entry med confirmationcode via ID och system 
+//Uppdatera entry som reminded via ID och system 
 const updateEntrySetReminded = (system, id) => {
   return new Promise(function (resolve, reject) {
       const connection = database.createConnection(system);
