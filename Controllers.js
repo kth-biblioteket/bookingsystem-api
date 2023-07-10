@@ -229,6 +229,39 @@ function substrInBetween(whole_str, str1, str2) {
     );
 }
 
+async function getOpeningHours(req, res) {
+    const lang = req.query.lang || 'en';
+    closedtext = translations[lang]["closedtext"]
+    let dayarray = [];
+    dayarray["monday"] = closedtext;
+    dayarray["tuesday"] = closedtext;
+    dayarray["wednesday"] = closedtext;
+    dayarray["thursday"] = closedtext;
+    dayarray["friday"] = closedtext;
+    dayarray["saturday"] = closedtext;
+    dayarray["sunday"] = closedtext;
+    try {
+        let roomstartend = await eventModel.readRoomStartEnd(req.params.system, req.params.librarycode)
+        if (roomstartend.length > 0) {
+            roomstartend.forEach(async row => {
+                row["monday"] !== null ? dayarray["monday"] = row["monday"] : 0
+                row["tuesday"] !== null ? dayarray["tuesday"] = row["tuesday"] : 0
+                row["wednesday"] !== null ? dayarray["wednesday"] = row["wednesday"] : 0
+                row["thursday"] !== null ? dayarray["thursday"] = row["thursday"] : 0
+                row["friday"] !== null ? dayarray["friday"] = row["friday"] : 0
+                row["saturday"] !== null ? dayarray["saturday"] = row["saturday"] : 0
+                row["sunday"] !== null ? dayarray["sunday"] = row["sunday"] : 0
+            });
+        } else {
+            // Settings för rummets start och end saknas!
+        }
+
+        res.send(dayarray)
+    } catch (err) {
+        res.send("error: " + err)
+    }
+}
+
 function truncate(str, max, suffix) {
     return str.length < max ? str : `${str.substr(0, str.substr(0, max - suffix.length).lastIndexOf(' '))}${suffix}`;
 }
@@ -241,5 +274,6 @@ module.exports = {
     updateEntryConfirmationCode,
     updateEntrySetReminded,
     substrInBetween,
+    getOpeningHours,
     truncate
 };

@@ -44,6 +44,8 @@ apiRoutes.put("/entrysetconfirmcode/:system/:id/:confirmationcode", VerifyToken,
 
 apiRoutes.put("/entrysetreminded/:system/:id/", VerifyToken, Controller.updateEntrySetReminded)
 
+apiRoutes.get("/openinghours/:system/:datetoget/:librarycode/:librarymorecode/:lang", Controller.getOpeningHours)
+
 app.use(process.env.API_ROUTES_PATH, apiRoutes);
 
 const server = app.listen(process.env.PORT || 3002, function () {

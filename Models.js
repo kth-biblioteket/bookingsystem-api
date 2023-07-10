@@ -228,6 +228,48 @@ const updateEntrySetReminded = (system, id) => {
   })
 };
 
+//Hämta öppettider för ett rum via room_ID, timestamo och system 
+const readRoomStartEnd = (system, librarycode) => {
+  return new Promise(function (resolve, reject) {
+      const connection = database.createConnection(system);
+      const query = `SELECT 
+                        concat(DATE_FORMAT(concat(CURDATE() , ' ', morningstarts_monday,':',morningstarts_minutes_monday),'%k.%i'),'–',
+                        DATE_FORMAT(date_add(concat(CURDATE() , ' ', eveningends_monday, ':', eveningends_minutes_monday),interval 30 minute),'%k.%i')) 
+                        as monday,
+                        concat(DATE_FORMAT(concat(CURDATE() , ' ', morningstarts_tuesday,':',morningstarts_minutes_tuesday),'%k.%i'),'–', 
+                        DATE_FORMAT(date_add(concat(CURDATE() , ' ', eveningends_tuesday, '.', eveningends_minutes_tuesday),interval 30 minute),'%k.%i')) 
+                        as tuesday,
+                        concat(DATE_FORMAT(concat(CURDATE() , ' ', morningstarts_wednesday,':',morningstarts_minutes_wednesday),'%k.%i'),'–', 
+                        DATE_FORMAT(date_add(concat(CURDATE() , ' ', eveningends_wednesday, '.', eveningends_minutes_wednesday),interval 30 minute),'%k.%i')) 
+                        as wednesday,
+                        concat(DATE_FORMAT(concat(CURDATE() , ' ', morningstarts_thursday,':',morningstarts_minutes_thursday),'%k.%i'),'–', 
+                        DATE_FORMAT(date_add(concat(CURDATE() , ' ', eveningends_thursday, '.', eveningends_minutes_thursday),interval 30 minute),'%k.%i')) 
+                        as thursday,
+                        concat(DATE_FORMAT(concat(CURDATE() , ' ', morningstarts_friday,':',morningstarts_minutes_friday),'%k.%i'),'–', 
+                        DATE_FORMAT(date_add(concat(CURDATE() , ' ', eveningends_friday, '.', eveningends_minutes_friday),interval 30 minute),'%k.%i')) 
+                        as friday,
+                        concat(DATE_FORMAT(concat(CURDATE() , ' ', morningstarts_saturday,':',morningstarts_minutes_saturday),'%k.%i'),'–', 
+                        DATE_FORMAT(date_add(concat(CURDATE() , ' ', eveningends_saturday, '.', eveningends_minutes_saturday),interval 30 minute),'%k.%i')) 
+                        as saturday,
+                        concat(DATE_FORMAT(concat(CURDATE() , ' ', morningstarts_sunday,':',morningstarts_minutes_sunday),'%k.%i'),'–', 
+                        DATE_FORMAT(date_add(concat(CURDATE() , ' ', eveningends_sunday, '.', eveningends_minutes_sunday),interval 30 minute),'%k.%i')) 
+                        as sunday
+                    FROM mrbs_room
+                    WHERE id = ?`;
+      params = [librarycode]
+
+      connection.query(query, params, (err, results, fields) => {
+          if (err) {
+            console.error('Error executing query:', err);
+            reject(err.message)
+          }
+          const successMessage = "Success"
+          connection.end();
+          resolve(results);
+        });
+  })
+};
+
 module.exports = {
     readEntry,
     readArea,
@@ -238,5 +280,6 @@ module.exports = {
     updateEntryConfirmed,
     readReminderBookings,
     updateEntryConfirmationCode,
-    updateEntrySetReminded
+    updateEntrySetReminded,
+    readRoomStartEnd
 };

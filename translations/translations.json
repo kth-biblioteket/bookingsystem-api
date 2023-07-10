@@ -16,7 +16,17 @@
         "mybookings" : "My bookings",
         "help" : "Help",
         "kthblink" : "https://www.kth.se/en/kthb",
-        "kthlink" : "https://www.kth.se/en"
+        "kthlink" : "https://www.kth.se/en",
+        "closedtext" : "Closed",
+        "unmannedtext" : "Unmanned",
+        "weektest" : "Week ",
+        "prevtext" : "Prev.",
+        "nexttext" : "Next",
+        "lang" : "en",
+        "moretext" : "* Unmanned, open with KTH access card",
+        "moretext_filial" : "* Unmanned outside regular hours, open with KTH access card",
+        "moretext_kista" : "* Unmanned outside regular hours, open with KTH access card",
+        "moretext_telge" : "* Unmanned outside regular hours"
     },
     "sv": {
         "welcome" : "Välkommen.",
@@ -35,6 +45,15 @@
         "mybookings" : "Mina bokningar",
         "help" : "Hjälp",
         "kthblink" : "https://www.kth.se/kthb",
-        "kthlink" : "https://www.kth.se"
+        "kthlink" : "https://www.kth.se",
+        "closedtext" : "Stängt",
+        "unmannedtext" : "Obemannat",
+        "weektest" : "Vecka ",
+        "prevtext" : "Föreg.",
+        "nexttext" : "Nästa",
+        "moretext" : "* Obemannat, öppet med KTH passerkort",
+        "moretext_filial" : "* Obemannat utanför ordinarie öppettider, öppet med KTH passerkort",
+        "moretext_kista" : "* Obemannat utanför ordinarie öppettider, öppet med KTH passerkort",
+        "moretext_telge" : "* Obemannat utanför ordinarie öppettider"
     }
   }
