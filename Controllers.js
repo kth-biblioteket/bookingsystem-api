@@ -230,6 +230,7 @@ function substrInBetween(whole_str, str1, str2) {
 }
 
 async function getOpeningHours(req, res) {
+    console.log("getOpeningHours")
     const lang = req.query.lang || 'en';
     closedtext = translations[lang]["closedtext"]
     let dayarray = [];
@@ -242,6 +243,7 @@ async function getOpeningHours(req, res) {
     dayarray["sunday"] = closedtext;
     try {
         let roomstartend = await eventModel.readRoomStartEnd(req.params.system, req.params.librarycode)
+        console.log(roomstartend)
         if (roomstartend.length > 0) {
             roomstartend.forEach(async row => {
                 row["monday"] !== null ? dayarray["monday"] = row["monday"] : 0
