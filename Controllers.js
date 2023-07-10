@@ -248,6 +248,7 @@ async function getOpeningHours(req, res) {
             roomstartend.forEach(async row => {
                 console.log(row["monday"])
                 console.log(row["sunday"])
+                console.log(dayarray)
                 row["monday"] !== null ? dayarray["monday"] = row["monday"] : 0
                 row["tuesday"] !== null ? dayarray["tuesday"] = row["tuesday"] : 0
                 row["wednesday"] !== null ? dayarray["wednesday"] = row["wednesday"] : 0
