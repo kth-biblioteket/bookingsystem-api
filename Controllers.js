@@ -255,12 +255,11 @@ async function getOpeningHours(req, res) {
                 row["friday"] !== null ? dayarray["friday"] = row["friday"] : 0
                 row["saturday"] !== null ? dayarray["saturday"] = row["saturday"] : 0
                 row["sunday"] !== null ? dayarray["sunday"] = row["sunday"] : 0
+                res.send(dayarray)
             });
         } else {
             // Settings för rummets start och end saknas!
         }
-
-        res.send(dayarray)
     } catch (err) {
         res.send("error: " + err)
     }
