@@ -245,21 +245,38 @@ async function getOpeningHours(req, res) {
         let roomstartend = await eventModel.readRoomStartEnd(req.params.system, req.params.librarycode)
         console.log(roomstartend)
         if (roomstartend.length > 0) {
-            roomstartend.forEach(async row => {
-                console.log(row["monday"])
-                console.log(row["sunday"])
+            for(i=0;i<roomstartend.length;i++) {
+            //roomstartend.forEach(async row => {
+                console.log(roomstartend[i]["monday"])
+                console.log(roomstartend[i],["sunday"])
                 console.log(dayarray)
-                row["monday"] !== null ? dayarray["monday"] = row["monday"] : 0
-                row["tuesday"] !== null ? dayarray["tuesday"] = row["tuesday"] : 0
-                row["wednesday"] !== null ? dayarray["wednesday"] = row["wednesday"] : 0
-                row["thursday"] !== null ? dayarray["thursday"] = row["thursday"] : 0
-                row["friday"] !== null ? dayarray["friday"] = row["friday"] : 0
-                row["saturday"] !== null ? dayarray["saturday"] = row["saturday"] : 0
-                row["sunday"] !== null ? dayarray["sunday"] = row["sunday"] : 0
-                res.send(dayarray)
-            });
+                roomstartend[i]["monday"] !== null ? dayarray["monday"] = roomstartend[i]["monday"] : 0
+                roomstartend[i]["tuesday"] !== null ? dayarray["tuesday"] = roomstartend[i]["tuesday"] : 0
+                roomstartend[i]["wednesday"] !== null ? dayarray["wednesday"] = roomstartend[i]["wednesday"] : 0
+                roomstartend[i]["thursday"] !== null ? dayarray["thursday"] = roomstartend[i]["thursday"] : 0
+                roomstartend[i]["friday"] !== null ? dayarray["friday"] = roomstartend[i]["friday"] : 0
+                roomstartend[i]["saturday"] !== null ? dayarray["saturday"] = roomstartend[i]["saturday"] : 0
+                roomstartend[i]["sunday"] !== null ? dayarray["sunday"] = roomstartend[i]["sunday"] : 0
+            };
         } else {
             // Settings för rummets start och end saknas!
+        }
+
+        //Kontrollera om det finns stängda dagar/timmar för veckan
+        //De öppna timmarna bör vara i ett block, dvs stäng början och slutet på en dag(eller stäng en hel dag) 
+        //Inte att det är öppet exempelvis 10-12 och 14-18 på en dag
+        //Finns det bokningar på dagen så hämta det lediga blocket
+        //Hitta första lediga tid och sista lediga tid
+        //Ta bort möjligheterna till seriebokningar(mrbs config)
+        let week_start = getFirstDayOfWeek(req.params.datetoget)
+        let week_end = getLastDayOfWeek(req.params.datetoget);
+        console.log('week_start: ' + week_start)
+        console.log('week_end: ' + week_end)
+        let roomcloseddays = await eventModel.readRoomClosedDays(req.params.system, req.params.librarycode, week_start, week_end)
+        console.log(roomcloseddays)
+        if (roomcloseddays.length > 0) {
+            for(i=0;i<roomcloseddays.length;i++) {
+            }
         }
     } catch (err) {
         res.send("error: " + err)
@@ -270,6 +287,19 @@ function truncate(str, max, suffix) {
     return str.length < max ? str : `${str.substr(0, str.substr(0, max - suffix.length).lastIndexOf(' '))}${suffix}`;
 }
 
+function getFirstDayOfWeek(date) {
+    const day = date.getDay();
+    const diff = (day + 6) % 7;
+    date.setDate(date.getDate() - diff);
+    return date;
+}
+
+function getLastDayOfWeek(date) {
+    const firstDayOfWeek = getFirstDayOfWeek(date);
+    const lastDayOfWeek = new Date(firstDayOfWeek);
+    lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+    return lastDayOfWeek;
+}
 module.exports = {
     readEntry,
     getRoomsAvailability,

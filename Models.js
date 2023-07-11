@@ -270,6 +270,32 @@ const readRoomStartEnd = (system, librarycode) => {
   })
 };
 
+//Hämta stängda dagar för vecka
+const readRoomClosedDays = (system, librarycode, week_start, week_end) => {
+  return new Promise(function (resolve, reject) {
+      const connection = database.createConnection(system);
+      const query = `SELECT
+                        mrbs_entry.start_time,
+                        DATE_FORMAT(FROM_UNIXTIME(mrbs_entry.start_time),'%Y-%m-%d') as datetoget
+                      FROM mrbs_entry 
+                      WHERE DATE_FORMAT(FROM_UNIXTIME(mrbs_entry.start_time),'%Y-%m-%d') >= ?
+                      AND DATE_FORMAT(FROM_UNIXTIME(mrbs_entry.start_time),'%Y-%m-%d') <= ?
+                      AND room_id = ?
+                      GROUP BY datetoget`;
+      params = [week_start, week_end, librarycode]
+
+      connection.query(query, params, (err, results, fields) => {
+          if (err) {
+            console.error('Error executing query:', err);
+            reject(err.message)
+          }
+          const successMessage = "Success"
+          connection.end();
+          resolve(results);
+        });
+  })
+};
+
 module.exports = {
     readEntry,
     readArea,
@@ -281,5 +307,6 @@ module.exports = {
     readReminderBookings,
     updateEntryConfirmationCode,
     updateEntrySetReminded,
-    readRoomStartEnd
+    readRoomStartEnd,
+    readRoomClosedDays
 };
