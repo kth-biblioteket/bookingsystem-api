@@ -279,6 +279,7 @@ async function getOpeningHours(req, res) {
             for(i=0;i<roomcloseddays.length;i++) {
             }
         }
+        res.send('OK')
     } catch (err) {
         res.send("error: " + err)
     }
