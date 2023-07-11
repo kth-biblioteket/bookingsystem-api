@@ -304,7 +304,7 @@ function getFirstDayOfWeek(date) {
 }
 
 function getLastDayOfWeek(date) {
-    const firstDayOfWeek = getFirstDayOfWeek(date);
+    const firstDayOfWeek = new Date(getFirstDayOfWeek(date));
     const lastDayOfWeek = new Date(firstDayOfWeek);
     lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
     return formatDate(lastDayOfWeek);
