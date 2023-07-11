@@ -268,8 +268,9 @@ async function getOpeningHours(req, res) {
         //Finns det bokningar på dagen så hämta det lediga blocket
         //Hitta första lediga tid och sista lediga tid
         //Ta bort möjligheterna till seriebokningar(mrbs config)
-        let week_start = getFirstDayOfWeek(req.params.datetoget)
-        let week_end = getLastDayOfWeek(req.params.datetoget);
+        const givenDate = new Date(req.params.datetoget);
+        let week_start = getFirstDayOfWeek(givenDate)
+        let week_end = getLastDayOfWeek(givenDate);
         console.log('week_start: ' + week_start)
         console.log('week_end: ' + week_end)
         let roomcloseddays = await eventModel.readRoomClosedDays(req.params.system, req.params.librarycode, week_start, week_end)
