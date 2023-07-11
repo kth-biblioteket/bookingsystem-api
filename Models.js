@@ -274,9 +274,7 @@ const readRoomStartEnd = (system, librarycode) => {
 const readRoomClosedDays = (system, librarycode, week_start, week_end) => {
   return new Promise(function (resolve, reject) {
       const connection = database.createConnection(system);
-      const query = `SELECT
-                        mrbs_entry.start_time,
-                        DATE_FORMAT(FROM_UNIXTIME(mrbs_entry.start_time),'%Y-%m-%d') as datetoget
+      const query = `SELECT DATE_FORMAT(FROM_UNIXTIME(mrbs_entry.start_time),'%Y-%m-%d') as datetoget
                       FROM mrbs_entry 
                       WHERE DATE_FORMAT(FROM_UNIXTIME(mrbs_entry.start_time),'%Y-%m-%d') >= ?
                       AND DATE_FORMAT(FROM_UNIXTIME(mrbs_entry.start_time),'%Y-%m-%d') <= ?
