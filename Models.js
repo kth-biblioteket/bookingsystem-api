@@ -393,5 +393,6 @@ module.exports = {
     readRoomStartEndWeek,
     readRoomStartEndDay,
     readRoomClosedDays,
-    readResolution
+    readResolution,
+    checkifslotisfree
 };

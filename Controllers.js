@@ -312,7 +312,7 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
     let closehour = "";
     let openinghourisset = FALSE;
     for (s = morning_slot_seconds;s <= evening_slot_seconds;s += resolution) {
-        let slot_free = await checkifslotisfree(datetocheck, room_id ,s);
+        let slot_free = await checkifslotisfree(system, datetocheck, room_id ,s);
         // om inga rader returneras så är sloten ledig
         if (slot_free.length = 0) {
             //om fri = spara som öppningstid för dagen
