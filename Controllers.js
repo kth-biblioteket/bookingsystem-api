@@ -280,9 +280,9 @@ async function getOpeningHours(req, res) {
                     dayarray[dayname] = closedtext;
                 } else {
                     if(non_default_openinghours[0] == "") {
-                        dayarray[$dayname] = closedtext;
+                        dayarray[dayname] = closedtext;
                     } else {
-                        dayarray[$dayname] = non_default_openinghours[0] + "–" + non_default_openinghours[1];
+                        dayarray[dayname] = non_default_openinghours[0] + "–" + non_default_openinghours[1];
                     }
                 }
             }
@@ -311,14 +311,14 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
     let evening_slot_seconds = morning_slot_seconds + ((n_time_slots - 1) * resolution); 
     let openinghour = "";
     let closehour = "";
-    let openinghourisset = FALSE;
+    let openinghourisset = false;
     for (s = morning_slot_seconds;s <= evening_slot_seconds;s += resolution) {
         let slot_free = await checkifslotisfree(system, datetocheck, room_id ,s);
         // om inga rader returneras så är sloten ledig
         if (slot_free.length = 0) {
             //om fri = spara som öppningstid för dagen
-            if (openinghourisset == FALSE) {
-                openinghourisset = TRUE;
+            if (openinghourisset == false) {
+                openinghourisset = true;
                 let ss = new Date(s * 1000)
                 openinghour = ss.toLocaleTimeString("sv-SE", { hour: "numeric", minute: "2-digit"}) // ex: 8:30
             } else {
