@@ -245,6 +245,7 @@ async function getOpeningHours(req, res) {
         //hämta resolution för area(id = 1)
         let resolution = eventModel.readResolution(system, 1);
         let roomstartend = await eventModel.readRoomStartEndWeek(req.params.system, req.params.librarycode)
+        console.log(roomstartend)
         if (roomstartend.length > 0) {
             for(i=0;i<roomstartend.length;i++) {
                 roomstartend[i]["monday"] !== null ? dayarray["monday"] = roomstartend[i]["monday"] : 0
