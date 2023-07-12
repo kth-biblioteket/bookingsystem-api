@@ -333,7 +333,7 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
         let openinghour = "";
         let closehour = "";
         let openinghourisset = false;
-        /*
+        
         for (s = morning_slot_seconds;s <= evening_slot_seconds;s += resolution) {
             let slot_free = await checkifslotisfree(system, datetocheck, room_id ,s);
             console.log('slot_free')
@@ -354,7 +354,7 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
                 }
             }
         }
-        */
+        
         console.log('openinghour')
         console.log(openinghour)
         let hours = [openinghour, closehour] ;
