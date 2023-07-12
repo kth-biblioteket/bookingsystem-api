@@ -335,13 +335,13 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
         let openinghourisset = false;
         
         for (s = morning_slot_seconds;s <= evening_slot_seconds;s += resolution) {
-            let slot_free = await eventModel.checkifslotisfree(system, datetocheck, room_id ,s);
-            console.log('slot_free')
-            console.log(slot_free)
+            let slot_free_res = await eventModel.checkifslotisfree(system, datetocheck, room_id ,s);
+            console.log('slot_free_res')
+            console.log(slot_free_res)
             // om inga rader returneras så är sloten ledig
-            console.log('slot_free.length')
-            console.log(slot_free.length)
-            if (slot_free.length = 0) {
+            console.log('slot_free_res.length')
+            console.log(slot_free_res.length)
+            if (slot_free.length == 0) {
                 //om fri = spara som öppningstid för dagen
                 if (openinghourisset == false) {
                     openinghourisset = true;
