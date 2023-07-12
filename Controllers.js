@@ -305,7 +305,12 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
     let d = new Date(datetocheck)
 
     let dayname = d.toLocaleDateString('en-GB', {  weekday: 'long'}).toLowerCase();
-    let RoomStartEndDay = await eventModel.readRoomStartEndDay(system, dayname, room_id);
+    try {
+         let RoomStartEndDay = await eventModel.readRoomStartEndDay(system, dayname, room_id);
+    } catch (err) {
+        console.log(err)
+        return
+    }
     console.log('RoomStartEndDay')
     console.log(RoomStartEndDay)
     let n_time_slots
