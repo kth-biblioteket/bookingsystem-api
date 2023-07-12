@@ -272,7 +272,7 @@ async function getOpeningHours(req, res) {
         console.log(roomcloseddays)
         if (roomcloseddays.length > 0) {
             for(i=0;i<roomcloseddays.length;i++) {
-                let non_default_openinghours = getNonDefaultOpeninghours(roomcloseddays[i].datetoget, req.params.librarycode, resolution )
+                let non_default_openinghours = getNonDefaultOpeninghours(req.params.system, roomcloseddays[i].datetoget, req.params.librarycode, resolution )
                 let d = new Date(roomcloseddays[i].datetoget)
                 let dayname = d.toLocaleDateString('en-GB', {  weekday: 'long'}).toLowerCase();
                 if(!non_default_openinghours) {
@@ -293,7 +293,7 @@ async function getOpeningHours(req, res) {
     }
 }
 
-async function getNonDefaultOpeninghours(datetocheck, room_id, resolution) {
+async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolution) {
     let d = new Date(datetocheck)
 
     let dayname = d.toLocaleDateString('en-GB', {  weekday: 'long'}).toLowerCase();
