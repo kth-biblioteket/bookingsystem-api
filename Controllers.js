@@ -322,6 +322,8 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
         console.log('slot_free')
         console.log(slot_free)
         // om inga rader returneras så är sloten ledig
+        console.log('slot_free.length')
+        console.log(slot_free.length)
         if (slot_free.length = 0) {
             //om fri = spara som öppningstid för dagen
             if (openinghourisset == false) {
@@ -335,7 +337,8 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
             }
         }
     }
-
+    console.log('openinghour')
+    console.log(openinghour)
     let hours = [openinghour, closehour] ;
     return hours;
 
