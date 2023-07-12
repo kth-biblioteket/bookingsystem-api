@@ -274,6 +274,8 @@ async function getOpeningHours(req, res) {
         if (roomcloseddays.length > 0) {
             for(i=0;i<roomcloseddays.length;i++) {
                 let non_default_openinghours = getNonDefaultOpeninghours(req.params.system, roomcloseddays[i].datetoget, req.params.librarycode, resolution )
+                console.log('non_default_openinghours')
+                console.log(non_default_openinghours)
                 let d = new Date(roomcloseddays[i].datetoget)
                 let dayname = d.toLocaleDateString('en-GB', {  weekday: 'long'}).toLowerCase();
                 console.log('dayname: ' + dayname)
@@ -300,6 +302,8 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
 
     let dayname = d.toLocaleDateString('en-GB', {  weekday: 'long'}).toLowerCase();
     let RoomStartEndDay = await eventModel.readRoomStartEndDay(system, dayname, room_id);
+    console.log('RoomStartEndDay')
+    console.log(RoomStartEndDay)
     let n_time_slots
     let morning_slot_seconds
     if (RoomStartEndDay.length > 0) {
@@ -315,6 +319,8 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
     let openinghourisset = false;
     for (s = morning_slot_seconds;s <= evening_slot_seconds;s += resolution) {
         let slot_free = await checkifslotisfree(system, datetocheck, room_id ,s);
+        console.log('slot_free')
+        console.log(slot_free)
         // om inga rader returneras så är sloten ledig
         if (slot_free.length = 0) {
             //om fri = spara som öppningstid för dagen
