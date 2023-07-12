@@ -283,12 +283,12 @@ async function getOpeningHours(req, res) {
                 let non_default_openinghours = await getNonDefaultOpeninghours(req.params.system, roomcloseddays[x].datetoget, req.params.librarycode, resolution )
                 console.log('x: ' + x)
                 console.log('non_default_openinghours')
-                console.log(non_default_openinghours)
+                console.log(non_default_openinghours.length)
                 let d = new Date(roomcloseddays[x].datetoget)
                 let dayname = d.toLocaleDateString('en-GB', {  weekday: 'long'}).toLowerCase();
                 console.log('dayname: ' + dayname)
                 
-                if(!non_default_openinghours) {
+                if(non_default_openinghours) {
                     dayarray[dayname] = closedtext;
                 } else {
                     if(non_default_openinghours[0] == "") {
