@@ -270,6 +270,7 @@ async function getOpeningHours(req, res) {
         let week_start = getFirstDayOfWeek(givenDate)
         let week_end = getLastDayOfWeek(givenDate);
         let roomcloseddays = await eventModel.readRoomClosedDays(req.params.system, req.params.librarycode, week_start, week_end)
+        console.log('roomcloseddays')
         console.log(roomcloseddays)
         if (roomcloseddays.length > 0) {
             for(i=0;i<roomcloseddays.length;i++) {
