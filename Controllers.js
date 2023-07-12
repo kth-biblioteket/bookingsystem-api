@@ -357,7 +357,10 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
         
         console.log('openinghour')
         console.log(openinghour)
-        let hours = [openinghour, closehour] ;
+        let hours = []
+        if (openinghourisset) {
+            hours = [openinghour, closehour] ;
+        }
         return hours;
     } catch (err) {
         console.log(err)
