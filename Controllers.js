@@ -272,6 +272,7 @@ async function getOpeningHours(req, res) {
         let roomcloseddays = await eventModel.readRoomClosedDays(req.params.system, req.params.librarycode, week_start, week_end)
         console.log('roomcloseddays')
         console.log(roomcloseddays)
+        /*
         if (roomcloseddays.length > 0) {
             for(i=0;i<roomcloseddays.length;i++) {
                 let non_default_openinghours = await getNonDefaultOpeninghours(req.params.system, roomcloseddays[i].datetoget, req.params.librarycode, resolution )
@@ -291,6 +292,7 @@ async function getOpeningHours(req, res) {
                 }
             }
         }
+        */
         console.log(dayarray)
         res.send('OK')
     } catch (err) {
