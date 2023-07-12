@@ -243,7 +243,7 @@ async function getOpeningHours(req, res) {
     dayarray["sunday"] = closedtext;
     try {
         //hämta resolution för area(id = 1)
-        let resolution = eventModel.readResolution(req.params.system, 1);
+        let resolution = await eventModel.readResolution(req.params.system, 1);
         let roomstartend = await eventModel.readRoomStartEndWeek(req.params.system, req.params.librarycode)
         console.log(roomstartend)
         if (roomstartend.length > 0) {
