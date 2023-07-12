@@ -302,60 +302,59 @@ async function getOpeningHours(req, res) {
 }
 
 async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolution) {
-    let d = new Date(datetocheck)
-
-    let dayname = d.toLocaleDateString('en-GB', {  weekday: 'long'}).toLowerCase();
     try {
-         let RoomStartEndDay = await eventModel.readRoomStartEndDay(system, dayname, room_id);
+        let d = new Date(datetocheck)
+        let dayname = d.toLocaleDateString('en-GB', {  weekday: 'long'}).toLowerCase();
+        let RoomStartEndDay = await eventModel.readRoomStartEndDay(system, dayname, room_id);
+        console.log('RoomStartEndDay')
+        console.log(RoomStartEndDay)
+        let n_time_slots
+        let morning_slot_seconds
+        if (RoomStartEndDay.length > 0) {
+            for(i=0;i<RoomStartEndDay.length;i++) {
+                n_time_slots = get_n_time_slots(RoomStartEndDay[i]["morningstarts"], RoomStartEndDay[i]["morningstarts_minutes"], RoomStartEndDay[i]["eveningends"], RoomStartEndDay[i]["eveningends_minutes"], resolution);
+                morning_slot_seconds = ((RoomStartEndDay[i]["morningstarts"] * 60) + RoomStartEndDay[i]["morningstarts_minutes"]) * 60;
+            }
+        }
+        console.log('morning_slot_seconds')
+        console.log(morning_slot_seconds)
+        
+        let evening_slot_seconds = morning_slot_seconds + ((n_time_slots - 1) * resolution);
+        console.log('evening_slot_seconds')
+        console.log(evening_slot_seconds) 
+        let openinghour = "";
+        let closehour = "";
+        let openinghourisset = false;
+        /*
+        for (s = morning_slot_seconds;s <= evening_slot_seconds;s += resolution) {
+            let slot_free = await checkifslotisfree(system, datetocheck, room_id ,s);
+            console.log('slot_free')
+            console.log(slot_free)
+            // om inga rader returneras så är sloten ledig
+            console.log('slot_free.length')
+            console.log(slot_free.length)
+            if (slot_free.length = 0) {
+                //om fri = spara som öppningstid för dagen
+                if (openinghourisset == false) {
+                    openinghourisset = true;
+                    let ss = new Date(s * 1000)
+                    openinghour = ss.toLocaleTimeString("sv-SE", { hour: "numeric", minute: "2-digit"}) // ex: 8:30
+                } else {
+                    //fortsätt och hitta den sista fria vars sluttid då blir stängningstid för dagen
+                    let ss = new Date((s + resolution) * 1000)
+                    closehour = ss.toLocaleTimeString("sv-SE", { hour: "numeric", minute: "2-digit"}) // ex: 8:30
+                }
+            }
+        }
+        */
+        console.log('openinghour')
+        console.log(openinghour)
+        let hours = [openinghour, closehour] ;
+        return hours;
     } catch (err) {
         console.log(err)
         return
     }
-    console.log('RoomStartEndDay')
-    console.log(RoomStartEndDay)
-    let n_time_slots
-    let morning_slot_seconds
-    if (RoomStartEndDay.length > 0) {
-        for(i=0;i<RoomStartEndDay.length;i++) {
-            n_time_slots = get_n_time_slots(RoomStartEndDay[i]["morningstarts"], RoomStartEndDay[i]["morningstarts_minutes"], RoomStartEndDay[i]["eveningends"], RoomStartEndDay[i]["eveningends_minutes"], resolution);
-            morning_slot_seconds = ((RoomStartEndDay[i]["morningstarts"] * 60) + RoomStartEndDay[i]["morningstarts_minutes"]) * 60;
-        }
-    }
-    console.log('morning_slot_seconds')
-    console.log(morning_slot_seconds)
-    
-    let evening_slot_seconds = morning_slot_seconds + ((n_time_slots - 1) * resolution);
-    console.log('evening_slot_seconds')
-    console.log(evening_slot_seconds) 
-    let openinghour = "";
-    let closehour = "";
-    let openinghourisset = false;
-    /*
-    for (s = morning_slot_seconds;s <= evening_slot_seconds;s += resolution) {
-        let slot_free = await checkifslotisfree(system, datetocheck, room_id ,s);
-        console.log('slot_free')
-        console.log(slot_free)
-        // om inga rader returneras så är sloten ledig
-        console.log('slot_free.length')
-        console.log(slot_free.length)
-        if (slot_free.length = 0) {
-            //om fri = spara som öppningstid för dagen
-            if (openinghourisset == false) {
-                openinghourisset = true;
-                let ss = new Date(s * 1000)
-                openinghour = ss.toLocaleTimeString("sv-SE", { hour: "numeric", minute: "2-digit"}) // ex: 8:30
-            } else {
-                //fortsätt och hitta den sista fria vars sluttid då blir stängningstid för dagen
-                let ss = new Date((s + resolution) * 1000)
-                closehour = ss.toLocaleTimeString("sv-SE", { hour: "numeric", minute: "2-digit"}) // ex: 8:30
-            }
-        }
-    }
-    */
-    console.log('openinghour')
-    console.log(openinghour)
-    let hours = [openinghour, closehour] ;
-    return hours;
 
 }
 
