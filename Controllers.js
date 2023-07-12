@@ -280,7 +280,7 @@ async function getOpeningHours(req, res) {
         console.log(roomcloseddays)
         if (roomcloseddays.length > 0) {
             for(x=0;x<roomcloseddays.length;x++) {
-                let non_default_openinghours = await getNonDefaultOpeninghours(req.params.system, roomcloseddays[i].datetoget, req.params.librarycode, resolution )
+                let non_default_openinghours = await getNonDefaultOpeninghours(req.params.system, roomcloseddays[x].datetoget, req.params.librarycode, resolution )
                 console.log('x: ' + x)
                 console.log('non_default_openinghours')
                 //console.log(non_default_openinghours)
