@@ -281,7 +281,7 @@ const readRoomStartEndDay = (system, dayname, librarycode) => {
                       eveningends_minutes_${dayname} eveningends_minutes
                     FROM mrbs_room
                     WHERE id = ?`;
-      params = [dayname, dayname, dayname, dayname, librarycode]
+      params = [librarycode]
 
       connection.query(query, params, (err, results, fields) => {
           if (err) {
