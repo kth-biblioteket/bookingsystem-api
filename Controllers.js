@@ -272,7 +272,6 @@ async function getOpeningHours(req, res) {
         let roomcloseddays = await eventModel.readRoomClosedDays(req.params.system, req.params.librarycode, week_start, week_end)
         console.log('roomcloseddays')
         console.log(roomcloseddays)
-        /*
         if (roomcloseddays.length > 0) {
             for(i=0;i<roomcloseddays.length;i++) {
                 let non_default_openinghours = await getNonDefaultOpeninghours(req.params.system, roomcloseddays[i].datetoget, req.params.librarycode, resolution )
@@ -292,7 +291,6 @@ async function getOpeningHours(req, res) {
                 }
             }
         }
-        */
         console.log(dayarray)
         res.send('OK')
     } catch (err) {
@@ -315,11 +313,16 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
             morning_slot_seconds = ((RoomStartEndDay[i]["morningstarts"] * 60) + RoomStartEndDay[i]["morningstarts_minutes"]) * 60;
         }
     }
+    console.log('morning_slot_seconds')
+    console.log(morning_slot_seconds)
     
-    let evening_slot_seconds = morning_slot_seconds + ((n_time_slots - 1) * resolution); 
+    let evening_slot_seconds = morning_slot_seconds + ((n_time_slots - 1) * resolution);
+    console.log('evening_slot_seconds')
+    console.log(evening_slot_seconds) 
     let openinghour = "";
     let closehour = "";
     let openinghourisset = false;
+    /*
     for (s = morning_slot_seconds;s <= evening_slot_seconds;s += resolution) {
         let slot_free = await checkifslotisfree(system, datetocheck, room_id ,s);
         console.log('slot_free')
@@ -340,6 +343,7 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
             }
         }
     }
+    */
     console.log('openinghour')
     console.log(openinghour)
     let hours = [openinghour, closehour] ;
