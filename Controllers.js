@@ -335,7 +335,7 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
         let openinghourisset = false;
         
         for (s = morning_slot_seconds;s <= evening_slot_seconds;s += resolution) {
-            let slot_free = await checkifslotisfree(system, datetocheck, room_id ,s);
+            let slot_free = await eventModel.checkifslotisfree(system, datetocheck, room_id ,s);
             console.log('slot_free')
             console.log(slot_free)
             // om inga rader returneras så är sloten ledig
