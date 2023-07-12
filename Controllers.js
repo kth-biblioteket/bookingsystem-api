@@ -242,14 +242,11 @@ async function getOpeningHours(req, res) {
     dayarray["saturday"] = closedtext;
     dayarray["sunday"] = closedtext;
     try {
-        let roomstartend = await eventModel.readRoomStartEnd(req.params.system, req.params.librarycode)
-        console.log(roomstartend)
+        //hämta resolution för area(id = 1)
+        let resolution = eventModel.readResolution(system, 1);
+        let roomstartend = await eventModel.readRoomStartEndWeek(req.params.system, req.params.librarycode)
         if (roomstartend.length > 0) {
             for(i=0;i<roomstartend.length;i++) {
-            //roomstartend.forEach(async row => {
-                console.log(roomstartend[i]["monday"])
-                console.log(roomstartend[i],["sunday"])
-                console.log(dayarray)
                 roomstartend[i]["monday"] !== null ? dayarray["monday"] = roomstartend[i]["monday"] : 0
                 roomstartend[i]["tuesday"] !== null ? dayarray["tuesday"] = roomstartend[i]["tuesday"] : 0
                 roomstartend[i]["wednesday"] !== null ? dayarray["wednesday"] = roomstartend[i]["wednesday"] : 0
@@ -271,18 +268,69 @@ async function getOpeningHours(req, res) {
         const givenDate = new Date(req.params.datetoget);
         let week_start = getFirstDayOfWeek(givenDate)
         let week_end = getLastDayOfWeek(givenDate);
-        console.log('week_start: ' + week_start)
-        console.log('week_end: ' + week_end)
         let roomcloseddays = await eventModel.readRoomClosedDays(req.params.system, req.params.librarycode, week_start, week_end)
         console.log(roomcloseddays)
         if (roomcloseddays.length > 0) {
             for(i=0;i<roomcloseddays.length;i++) {
+                let non_default_openinghours = getNonDefaultOpeninghours(roomcloseddays[i].datetoget, req.params.librarycode, resolution )
+                let d = new Date(roomcloseddays[i].datetoget)
+                let dayname = d.toLocaleDateString('en-GB', {  weekday: 'long'}).toLowerCase();
+                if(!non_default_openinghours) {
+                    dayarray[dayname] = closedtext;
+                } else {
+                    if(non_default_openinghours[0] == "") {
+                        dayarray[$dayname] = closedtext;
+                    } else {
+                        dayarray[$dayname] = non_default_openinghours[0] + "–" + non_default_openinghours[1];
+                    }
+                }
             }
         }
+        console.log(dayarray)
         res.send('OK')
     } catch (err) {
         res.send("error: " + err)
     }
+}
+
+async function getNonDefaultOpeninghours(datetocheck, room_id, resolution) {
+    let d = new Date(datetocheck)
+
+    let dayname = d.toLocaleDateString('en-GB', {  weekday: 'long'}).toLowerCase();
+    let RoomStartEndDay = await eventModel.readRoomStartEndDay(system, dayname, room_id);
+    let n_time_slots
+    let morning_slot_seconds
+    if (RoomStartEndDay.length > 0) {
+        for(i=0;i<RoomStartEndDay.length;i++) {
+            n_time_slots = get_n_time_slots(RoomStartEndDay[i]["morningstarts"], RoomStartEndDay[i]["morningstarts_minutes"], RoomStartEndDay[i]["eveningends"], RoomStartEndDay[i]["eveningends_minutes"], resolution);
+            morning_slot_seconds = ((RoomStartEndDay[i]["morningstarts"] * 60) + RoomStartEndDay[i]["morningstarts_minutes"]) * 60;
+        }
+    }
+    
+    let evening_slot_seconds = morning_slot_seconds + ((n_time_slots - 1) * resolution); 
+    let openinghour = "";
+    let closehour = "";
+    let openinghourisset = FALSE;
+    for (s = morning_slot_seconds;s <= evening_slot_seconds;s += resolution) {
+        let slot_free = await checkifslotisfree(datetocheck, room_id ,s);
+        // om inga rader returneras så är sloten ledig
+        if (slot_free.length = 0) {
+            //om fri = spara som öppningstid för dagen
+            if (openinghourisset == FALSE) {
+                openinghourisset = TRUE;
+                let ss = new Date(s * 1000)
+                openinghour = ss.toLocaleTimeString("sv-SE", { hour: "numeric", minute: "2-digit"}) // ex: 8:30
+            } else {
+                //fortsätt och hitta den sista fria vars sluttid då blir stängningstid för dagen
+                let ss = new Date((s + resolution) * 1000)
+                closehour = ss.toLocaleTimeString("sv-SE", { hour: "numeric", minute: "2-digit"}) // ex: 8:30
+            }
+        }
+    }
+
+    let hours = [openinghour, closehour] ;
+    return hours;
+
 }
 
 function truncate(str, max, suffix) {
@@ -309,6 +357,17 @@ function getLastDayOfWeek(date) {
     lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
     return formatDate(lastDayOfWeek);
 }
+
+function get_n_time_slots(morningstarts, morningstarts_minutes, eveningends, eveningends_minutes, resolution) { 
+    let seconds_per_day = 24*60*60
+    let start_first = ((morningstarts * 60) + morningstarts_minutes) * 60;
+    let end_last = (((eveningends * 60) + eveningends_minutes) * 60) + resolution;
+    end_last = end_last % seconds_per_day;
+    let n_slots = (end_last - start_first)/resolution;
+  
+    return n_slots;
+}
+
 module.exports = {
     readEntry,
     getRoomsAvailability,

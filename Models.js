@@ -228,8 +228,8 @@ const updateEntrySetReminded = (system, id) => {
   })
 };
 
-//Hämta öppettider för ett rum via room_ID, timestamo och system 
-const readRoomStartEnd = (system, librarycode) => {
+//Hämta öppettider för ett rums veckodagar via id(librarycode) och system 
+const readRoomStartEndWeek = (system, librarycode) => {
   return new Promise(function (resolve, reject) {
       const connection = database.createConnection(system);
       const query = `SELECT 
@@ -270,6 +270,31 @@ const readRoomStartEnd = (system, librarycode) => {
   })
 };
 
+//Hämta öppettider för ett rums veckodag via id(librarycode) och system 
+const readRoomStartEndDay = (system, dayname, librarycode) => {
+  return new Promise(function (resolve, reject) {
+      const connection = database.createConnection(system);
+      const query = `SELECT 
+                      morningstarts_${dayname} as morningstarts,
+                      morningstarts_minutes_${dayname} as morningstarts_minutes,
+                      eveningends_${dayname} as eveningends,
+                      eveningends_minutes_${dayname} eveningends_minutes
+                    FROM mrbs_room
+                    WHERE id = ?`;
+      params = [dayname, dayname, dayname, dayname, librarycode]
+
+      connection.query(query, params, (err, results, fields) => {
+          if (err) {
+            console.error('Error executing query:', err);
+            reject(err.message)
+          }
+          const successMessage = "Success"
+          connection.end();
+          resolve(results);
+        });
+  })
+};
+
 //Hämta stängda dagar för vecka
 const readRoomClosedDays = (system, librarycode, week_start, week_end) => {
   return new Promise(function (resolve, reject) {
@@ -294,6 +319,66 @@ const readRoomClosedDays = (system, librarycode, week_start, week_end) => {
   })
 };
 
+//Hämta resolution för area
+const readResolution = (system, librarycode) => {
+  return new Promise(function (resolve, reject) {
+      const connection = database.createConnection(system);
+      const query = `SELECT resolution
+                    FROM mrbs_area 
+                    WHERE id = ?`;
+      params = [librarycode]
+
+      connection.query(query, params, (err, results, fields) => {
+          if (err) {
+            console.error('Error executing query:', err);
+            reject(err.message)
+          }
+          const successMessage = "Success"
+          connection.end();
+          resolve(results);
+        });
+  })
+};
+
+//Kolla om slot är ledig
+const checkifslotisfree = (system, datetocheck, slotinseconds, librarycode) => {
+  return new Promise(function (resolve, reject) {
+
+      // slotinseconds = tid(8:30) omgjord till sekunder(30600)
+      // Lägg till datum till angivna slotinseconds (2023-07-12 08:30)
+      const dateTime = new Date(0);
+      dateTime.setSeconds(slotinseconds);
+      const timeString = dateTime.toLocaleTimeString('en-US', {
+        hour12: false,
+        hour: 'numeric',
+        minute: '2-digit'
+      });
+
+      const dateTimeString = datetocheck + ' ' + timeString;
+
+      const dt = new Date(dateTimeString);
+
+      const unixTimestamp = dt.getTime();
+  
+      const connection = database.createConnection(system);
+      const query = `SELECT * FROM mrbs_entry
+                      WHERE room_id = ?
+                      AND start_time <= ${unixTimestamp}
+                      AND end_time > ${unixTimestamp}`;
+      params = [librarycode]
+
+      connection.query(query, params, (err, results, fields) => {
+          if (err) {
+            console.error('Error executing query:', err);
+            reject(err.message)
+          }
+          const successMessage = "Success"
+          connection.end();
+          resolve(results);
+        });
+  })
+};
+
 module.exports = {
     readEntry,
     readArea,
@@ -305,6 +390,8 @@ module.exports = {
     readReminderBookings,
     updateEntryConfirmationCode,
     updateEntrySetReminded,
-    readRoomStartEnd,
-    readRoomClosedDays
+    readRoomStartEndWeek,
+    readRoomStartEndDay,
+    readRoomClosedDays,
+    readResolution
 };
