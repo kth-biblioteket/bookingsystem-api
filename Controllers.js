@@ -288,7 +288,7 @@ async function getOpeningHours(req, res) {
                 let dayname = d.toLocaleDateString('en-GB', {  weekday: 'long'}).toLowerCase();
                 console.log('dayname: ' + dayname)
                 
-                if(non_default_openinghours) {
+                if(non_default_openinghours.length == 0) {
                     dayarray[dayname] = closedtext;
                 } else {
                     if(non_default_openinghours[0] == "") {
