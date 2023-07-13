@@ -360,6 +360,8 @@ const checkifslotisfree = (system, datetocheck, slotinseconds, librarycode) => {
 
       const unixTimestamp = dt.getTime();
   
+      console.log('unixTimestamp')
+      console.log(unixTimestamp)
       const connection = database.createConnection(system);
       const query = `SELECT * FROM mrbs_entry
                       WHERE room_id = ?
