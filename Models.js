@@ -341,7 +341,7 @@ const readResolution = (system, librarycode) => {
 };
 
 //Kolla om slot är ledig
-const checkifslotisfree = (system, datetocheck, slotinseconds, librarycode) => {
+const checkifslotisfree = (system, datetocheck, librarycode, slotinseconds) => {
   return new Promise(function (resolve, reject) {
 
       // slotinseconds = tid(8:30) omgjord till sekunder(30600)
