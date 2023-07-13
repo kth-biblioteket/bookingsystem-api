@@ -349,11 +349,12 @@ const checkifslotisfree = (system, datetocheck, librarycode, slotinseconds) => {
       console.log('slotinseconds')
       console.log(slotinseconds)
       const dateTime = new Date(0);
-      dateTime.setSeconds(slotinseconds);
+      dateTime.setUTCSeconds(slotinseconds);
       const timeString = dateTime.toLocaleTimeString('sv-SE', {
         hour12: false,
         hour: 'numeric',
-        minute: '2-digit'
+        minute: '2-digit',
+        timeZone: 'UTC'
       });
 
       const dateTimeString = datetocheck + ' ' + timeString;
