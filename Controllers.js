@@ -321,6 +321,10 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
                 n_time_slots = get_n_time_slots(RoomStartEndDay[i]["morningstarts"], RoomStartEndDay[i]["morningstarts_minutes"], RoomStartEndDay[i]["eveningends"], RoomStartEndDay[i]["eveningends_minutes"], resolution);
                 console.log('n_time_slots')
                 console.log(n_time_slots)
+                console.log("morningstarts")
+                console.log(RoomStartEndDay[i]["morningstarts"])
+                console.log("morningstarts_minutes")
+                console.log(RoomStartEndDay[i]["morningstarts_minutes"])
                 morning_slot_seconds = ((RoomStartEndDay[i]["morningstarts"] * 60) + RoomStartEndDay[i]["morningstarts_minutes"]) * 60;
             }
         }
