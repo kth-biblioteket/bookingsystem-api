@@ -396,14 +396,8 @@ function getLastDayOfWeek(date) {
 
 function get_n_time_slots(morningstarts, morningstarts_minutes, eveningends, eveningends_minutes, resolution) { 
     let seconds_per_day = 24*60*60
-    console.log('resolution')
-    console.log(resolution)
     let start_first = ((morningstarts * 60) + morningstarts_minutes) * 60;
-    console.log('start_first')
-    console.log(start_first)
     let end_last = (((eveningends * 60) + eveningends_minutes) * 60) + resolution;
-    console.log('end_last')
-    console.log(end_last)
     end_last = end_last % seconds_per_day;
     let n_slots = (end_last - start_first)/resolution;
   
