@@ -230,7 +230,6 @@ function substrInBetween(whole_str, str1, str2) {
 }
 
 async function getOpeningHours(req, res) {
-    console.log("getOpeningHours")
     const lang = req.query.lang || 'en';
     closedtext = translations[lang]["closedtext"]
     let dayarray = {};
@@ -251,7 +250,6 @@ async function getOpeningHours(req, res) {
             }
         }
         let roomstartend = await eventModel.readRoomStartEndWeek(req.params.system, req.params.librarycode)
-        console.log(roomstartend)
         if (roomstartend.length > 0) {
             for(i=0;i<roomstartend.length;i++) {
                 roomstartend[i]["monday"] !== null ? dayarray["monday"] = roomstartend[i]["monday"] : 0
@@ -276,18 +274,11 @@ async function getOpeningHours(req, res) {
         let week_start = getFirstDayOfWeek(givenDate)
         let week_end = getLastDayOfWeek(givenDate);
         let roomcloseddays = await eventModel.readRoomClosedDays(req.params.system, req.params.librarycode, week_start, week_end)
-        console.log('roomcloseddays')
-        console.log(roomcloseddays)
         if (roomcloseddays.length > 0) {
             for(x=0;x<roomcloseddays.length;x++) {
                 let non_default_openinghours = await getNonDefaultOpeninghours(req.params.system, roomcloseddays[x].datetoget, req.params.librarycode, resolution )
-                console.log('x: ' + x)
-                console.log('non_default_openinghours')
-                console.log(non_default_openinghours.length)
                 let d = new Date(roomcloseddays[x].datetoget)
                 let dayname = d.toLocaleDateString('en-GB', {  weekday: 'long'}).toLowerCase();
-                console.log('dayname: ' + dayname)
-                
                 if(non_default_openinghours.length == 0) {
                     dayarray[dayname] = closedtext;
                 } else {
@@ -300,8 +291,7 @@ async function getOpeningHours(req, res) {
                 
             }
         }
-        console.log(dayarray)
-        res.send('OK')
+        res.send(dayarray)
     } catch (err) {
         res.send("error: " + err)
     }
@@ -312,28 +302,15 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
         let d = new Date(datetocheck)
         let dayname = d.toLocaleDateString('en-GB', {  weekday: 'long'}).toLowerCase();
         let RoomStartEndDay = await eventModel.readRoomStartEndDay(system, dayname, room_id);
-        console.log('RoomStartEndDay')
-        console.log(RoomStartEndDay)
         let n_time_slots
         let morning_slot_seconds
         if (RoomStartEndDay.length > 0) {
             for(i=0;i<RoomStartEndDay.length;i++) {
                 n_time_slots = get_n_time_slots(RoomStartEndDay[i]["morningstarts"], RoomStartEndDay[i]["morningstarts_minutes"], RoomStartEndDay[i]["eveningends"], RoomStartEndDay[i]["eveningends_minutes"], resolution);
-                console.log('n_time_slots')
-                console.log(n_time_slots)
-                console.log("morningstarts")
-                console.log(RoomStartEndDay[i]["morningstarts"])
-                console.log("morningstarts_minutes")
-                console.log(RoomStartEndDay[i]["morningstarts_minutes"])
                 morning_slot_seconds = ((RoomStartEndDay[i]["morningstarts"] * 60) + RoomStartEndDay[i]["morningstarts_minutes"]) * 60;
             }
         }
-        console.log('morning_slot_seconds')
-        console.log(morning_slot_seconds)
-        
         let evening_slot_seconds = morning_slot_seconds + ((n_time_slots - 1) * resolution);
-        console.log('evening_slot_seconds')
-        console.log(evening_slot_seconds) 
         let openinghour = "";
         let closehour = "";
         let openinghourisset = false;
@@ -344,12 +321,10 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
             if (slot_free_res.length == 0) {
                 //om fri = spara som öppningstid för dagen
                 if (openinghourisset == false) {
-                    console.log("öppningstid")
                     openinghourisset = true;
                     let ss = new Date(s * 1000)
                     openinghour = ss.toLocaleTimeString("sv-SE", { hour: "numeric", minute: "2-digit", timeZone: 'UTC'}) // ex: 8:30
                 } else {
-                    console.log("stängningstid")
                     //fortsätt och hitta den sista fria vars sluttid då blir stängningstid för dagen
                     let ss = new Date((s + resolution) * 1000)
                     closehour = ss.toLocaleTimeString("sv-SE", { hour: "numeric", minute: "2-digit", timeZone: 'UTC'}) // ex: 8:30
@@ -359,10 +334,6 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
             }
         }
         
-        console.log('openinghour')
-        console.log(openinghour)
-        console.log('closehour')
-        console.log(closehour)
         let hours = []
         if (openinghourisset) {
             hours = [openinghour, closehour] ;

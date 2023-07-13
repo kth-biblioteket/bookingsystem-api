@@ -346,8 +346,6 @@ const checkifslotisfree = (system, datetocheck, librarycode, slotinseconds) => {
 
       // slotinseconds = tid(8:30) omgjord till sekunder(30600)
       // Lägg till datum till angivna slotinseconds (2023-07-12 08:30)
-      console.log('slotinseconds')
-      console.log(slotinseconds)
       const dateTime = new Date(0);
       dateTime.setUTCSeconds(slotinseconds);
       const timeString = dateTime.toLocaleTimeString('sv-SE', {
@@ -358,17 +356,9 @@ const checkifslotisfree = (system, datetocheck, librarycode, slotinseconds) => {
       });
 
       const dateTimeString = datetocheck + ' ' + timeString;
-
-      console.log('dateTimeString')
-      console.log(dateTimeString)
-
       const dt = new Date(dateTimeString);
-
-      console.log('dt')
-      console.log(dt)
-
       const unixTimestamp = dt.getTime()/1000;
-  
+      
       const connection = database.createConnection(system);
       const query = `SELECT * FROM mrbs_entry
                       WHERE room_id = ?
