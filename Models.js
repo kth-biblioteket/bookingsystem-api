@@ -346,9 +346,11 @@ const checkifslotisfree = (system, datetocheck, slotinseconds, librarycode) => {
 
       // slotinseconds = tid(8:30) omgjord till sekunder(30600)
       // Lägg till datum till angivna slotinseconds (2023-07-12 08:30)
+      console.log('slotinseconds')
+      console.log(slotinseconds)
       const dateTime = new Date(0);
       dateTime.setSeconds(slotinseconds);
-      const timeString = dateTime.toLocaleTimeString('en-US', {
+      const timeString = dateTime.toLocaleTimeString('sv-SE', {
         hour12: false,
         hour: 'numeric',
         minute: '2-digit'
