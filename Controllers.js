@@ -345,6 +345,7 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
                     let ss = new Date(s * 1000)
                     openinghour = ss.toLocaleTimeString("sv-SE", { hour: "numeric", minute: "2-digit"}) // ex: 8:30
                 } else {
+                    console.log("stängningstid")
                     //fortsätt och hitta den sista fria vars sluttid då blir stängningstid för dagen
                     let ss = new Date((s + resolution) * 1000)
                     closehour = ss.toLocaleTimeString("sv-SE", { hour: "numeric", minute: "2-digit"}) // ex: 8:30
@@ -354,6 +355,8 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
         
         console.log('openinghour')
         console.log(openinghour)
+        console.log('closehour')
+        console.log(closehour)
         let hours = []
         if (openinghourisset) {
             hours = [openinghour, closehour] ;
