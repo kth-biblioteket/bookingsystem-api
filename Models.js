@@ -358,7 +358,7 @@ const checkifslotisfree = (system, datetocheck, slotinseconds, librarycode) => {
 
       const dt = new Date(dateTimeString);
 
-      const unixTimestamp = dt.getTime();
+      const unixTimestamp = dt.getTime()/1000;
   
       console.log('unixTimestamp')
       console.log(unixTimestamp)
