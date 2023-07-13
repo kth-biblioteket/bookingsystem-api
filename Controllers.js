@@ -350,6 +350,8 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
                     let ss = new Date((s + resolution) * 1000)
                     closehour = ss.toLocaleTimeString("sv-SE", { hour: "numeric", minute: "2-digit"}) // ex: 8:30
                 }
+            } else {
+                console.log('tid stängd')
             }
         }
         
