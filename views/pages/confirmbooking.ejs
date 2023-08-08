@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <%- include('../partials/confirmbookinghead'); %>
+</head>
+
+<body>
+    <div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+            <a class="navbar-brand" href="#">
+                <img alt="" src="/bookingsystem/images/kthlogo.jpg" width="75" height="75"
+                    class="d-inline-block align-top"> KTH Biblioteket
+            </a>
+            <button aria-controls="basic-navbar-nav" type="button" aria-label="Toggle navigation"
+                class="navbar-toggler collapsed"><span class="navbar-toggler-icon"></span></button>
+            <div class="navbar-collapse collapse" id="basic-navbar-nav">
+                <div class="navbar-nav">
+                </div>
+            </div>
+            <div id="gradientBorder"></div>
+        </nav>
+        <div class="tab-content" id="myTabContent">
+            <div class="header">
+                <span><%= confirmdata.confirmheader %></span>
+            </div>
+            <% if(confirmdata.confirmation) { %>
+                <div class="lead"><%= confirmdata.translations.confirmmessage_1 %> <%= confirmdata.name %> <%= confirmdata.translations.confirmmessage_2 %> <%= confirmdata.start_time + ' - ' + confirmdata.end_time %> <%= confirmdata.translations.confirmmessage_3 %></div>
+            <% } else { %>
+                <div class="lead"><%= confirmdata.translations[confirmdata.message] %></div>
+            <% } %>
+        </div>
+    </div>
+</body>
+    <%- include('../partials/confirmbookingscript'); %>
+</html>

@@ -1,0 +1,25 @@
+version: '3.6'
+
+services:
+  bookingsystem-api:
+    container_name: bookingsystem-api
+    image: ghcr.io/kth-biblioteket/bookingsystem-api:${REPO_TYPE}
+    restart: always
+    environment:
+      - TZ=${TZ}
+    env_file:
+      - ./bookingsystem-api.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bookingsystem-api.rule=Host(`${DOMAIN_NAME}`) && PathPrefix(`${PATHPREFIX}`)"
+      - "traefik.http.routers.bookingsystem-api.middlewares=bookingsystem-api-stripprefix"
+      - "traefik.http.middlewares.bookingsystem-api-stripprefix.stripprefix.prefixes=${PATHPREFIX}"
+      - "traefik.http.routers.bookingsystem-api.entrypoints=websecure"
+      - "traefik.http.routers.bookingsystem-api.tls=true"
+      - "traefik.http.routers.bookingsystem-api.tls.certresolver=myresolver"
+    networks:
+      - "apps-net"
+
+networks:
+  apps-net:
+    external: true
