@@ -513,7 +513,7 @@ async function getOpeningHours_start(req, res) {
                     html +=  `<div class='openinghoursinfo'>${mannedtext}: ${openinghoursarr[0].replaceAll('.00','')}–${openinghoursarr[1].replaceAll('.00','')}${openinfotext_2}</div>`;
                 } else {
                     html += `<div>${libraryname}: ${firsthour.replaceAll('.00','')}–${lasthour.replaceAll('.00','')}</div>`;
-                    html += `<div class='openinghoursinfo'>${unmannedtext}/div>`;
+                    html += `<div class='openinghoursinfo'>${unmannedtext}</div>`;
                 }
             } else {
                 html += `<div>${libraryname}: ${closedtext}</div>`;
