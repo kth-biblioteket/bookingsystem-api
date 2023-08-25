@@ -47,6 +47,8 @@ apiRoutes.put("/entrysetreminded/:system/:id/", VerifyToken, Controller.updateEn
 
 apiRoutes.get("/openinghours/:system/:datetoget/:librarycode/:librarymorecode/:lang", Controller.getOpeningHours)
 
+apiRoutes.get("/openinghoursnew/:system/:datetoget/:librarycode/:librarymorecode/:lang", Controller.getOpeningHours_new)
+
 apiRoutes.get("/openinghoursstart/:system/:datetoget/:librarycode/:librarymorecode/:lang", Controller.getOpeningHours_start)
 
 app.use(process.env.API_ROUTES_PATH, apiRoutes);
