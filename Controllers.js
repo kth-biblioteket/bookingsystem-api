@@ -524,12 +524,12 @@ async function getOpeningHours_start(req, res) {
         if(req.params.librarycode == process.env.MAIN_LIBRARY_CODE ) {
             if(lang == 'en') {
                 libraryname = "Main Library";
-                openinfotext_1 = "Note! Access with KTH access card";
+                openinfotext_1 = "Note! Access with KTH access card mornings";
                 openinfotext_2 = "";
                 closedtext = "Closed";
             } else {
                 libraryname = "Huvudbiblioteket";
-                openinfotext_1 = "Obs! ";
+                openinfotext_1 = "Obs! Morgnar";
                 openinfotext_2 = "krävs KTH passerkort";
                 closedtext = "Stängt";
             }
