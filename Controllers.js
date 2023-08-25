@@ -376,12 +376,12 @@ async function getOpeningHours_new(req, res) {
             if(req.params.librarycode == process.env.MAIN_LIBRARY_CODE ) {
                 if(!libaryclosed) {
                     if(ismanned) {
-                        html +=  `<div style="" class="weekdays">${day.toLocaleDateString(req.params.lang, { weekday: 'long' })} <span class="openhours">${firsthour.replaceAll('.00','')}${moreopen ? '*' : ''}–${lasthour.replaceAll('.00','')}</span></div>`
+                        html +=  `<div class="weekdays">${day.toLocaleDateString(req.params.lang, { weekday: 'long' })} <span class="openhours">${firsthour.replaceAll('.00','')}${moreopen ? '*' : ''}–${lasthour.replaceAll('.00','')}</span></div>`
                     } else {
                         
                     }       
                 } else {
-                    html += `<div>${day.toLocaleDateString(req.params.lang, { weekday: 'long' })} ${closedtext}</div>`;
+                    html += `<div class="weekdays">${day.toLocaleDateString(req.params.lang, { weekday: 'long' })} span class="openhours">${closedtext}</span></div>`;
                 } 
             }
             
