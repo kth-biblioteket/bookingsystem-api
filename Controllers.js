@@ -381,7 +381,7 @@ async function getOpeningHours_new(req, res) {
                         
                     }       
                 } else {
-                    html += `<div class="weekdays">${day.toLocaleDateString(req.params.lang, { weekday: 'long' })} span class="openhours">${closedtext}</span></div>`;
+                    html += `<div class="weekdays">${day.toLocaleDateString(req.params.lang, { weekday: 'long' })} <span class="openhours">${closedtext}</span></div>`;
                 } 
             }
             
