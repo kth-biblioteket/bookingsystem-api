@@ -572,7 +572,7 @@ async function getOpeningHours(req, res) {
             </div>
             <div class="weekdays">${translations[lang]["dayNames"][0]} <span class="openhours closed">${dayarray["sunday"].replaceAll('.00','') + daymorearray["sunday"].replaceAll('.00','')}</span>
             </div>
-            <div class="navigatedays" style="overflow:auto;">`;
+            <div class="navigatedays">`;
             if (prevdate != "") {
                 html_ += 
                 `<div class="previousweek">
