@@ -553,30 +553,30 @@ async function getOpeningHours(req, res) {
         let week_end_date = formatDateForHTMLWeekDays(new Date(week_end))
         
         let html_ =`
-        <div class="openhourscontainer" style="overflow:auto">
-            <div style="">
-                <div style="display:none" class="weekheader">Vecka 04</div>
+        <div class="openhourscontainer">
+            <div>
+                <div class="weekheader">Vecka 04</div>
                 <span class="weekdates">${week_start_date}-${week_end_date}</span>
             </div>
-            <div style="" class="weekdays">${translations[lang]["dayNames"][1]} <span class="openhours">${dayarray["monday"].replaceAll('.00','') + daymorearray["monday"].replaceAll('.00','')}</span>
+            <div class="weekdays">${translations[lang]["dayNames"][1]} <span class="openhours">${dayarray["monday"].replaceAll('.00','') + daymorearray["monday"].replaceAll('.00','')}</span>
             </div>
-            <div style="" class="weekdays">${translations[lang]["dayNames"][2]} <span class="openhours">${dayarray["tuesday"].replaceAll('.00','') + daymorearray["tuesday"].replaceAll('.00','')}</span>
+            <div class="weekdays">${translations[lang]["dayNames"][2]} <span class="openhours">${dayarray["tuesday"].replaceAll('.00','') + daymorearray["tuesday"].replaceAll('.00','')}</span>
             </div>
-            <div style="" class="weekdays">${translations[lang]["dayNames"][3]} <span class="openhours">${dayarray["wednesday"].replaceAll('.00','') + daymorearray["wednesday"].replaceAll('.00','')}</span>
+            <div class="weekdays">${translations[lang]["dayNames"][3]} <span class="openhours">${dayarray["wednesday"].replaceAll('.00','') + daymorearray["wednesday"].replaceAll('.00','')}</span>
             </div>
-            <div style="" class="weekdays">${translations[lang]["dayNames"][4]} <span class="openhours">${dayarray["thursday"].replaceAll('.00','') + daymorearray["thursday"].replaceAll('.00','')}</span>
+            <div class="weekdays">${translations[lang]["dayNames"][4]} <span class="openhours">${dayarray["thursday"].replaceAll('.00','') + daymorearray["thursday"].replaceAll('.00','')}</span>
             </div>
-            <div style="" class="weekdays">${translations[lang]["dayNames"][5]} <span class="openhours">${dayarray["friday"].replaceAll('.00','') + daymorearray["friday"].replaceAll('.00','')}</span>
+            <div class="weekdays">${translations[lang]["dayNames"][5]} <span class="openhours">${dayarray["friday"].replaceAll('.00','') + daymorearray["friday"].replaceAll('.00','')}</span>
             </div>
-            <div style="" class="weekdays">${translations[lang]["dayNames"][6]} <span class="openhours">${dayarray["saturday"].replaceAll('.00','') + daymorearray["saturday"].replaceAll('.00','')}</span>
+            <div class="weekdays">${translations[lang]["dayNames"][6]} <span class="openhours">${dayarray["saturday"].replaceAll('.00','') + daymorearray["saturday"].replaceAll('.00','')}</span>
             </div>
-            <div style="" class="weekdays">${translations[lang]["dayNames"][0]} <span class="openhours closed">${dayarray["sunday"].replaceAll('.00','') + daymorearray["sunday"].replaceAll('.00','')}</span>
+            <div class="weekdays">${translations[lang]["dayNames"][0]} <span class="openhours closed">${dayarray["sunday"].replaceAll('.00','') + daymorearray["sunday"].replaceAll('.00','')}</span>
             </div>
             <div class="navigatedays" style="overflow:auto;">`;
             if (prevdate != "") {
                 html_ += 
                 `<div class="previousweek">
-                    <a style="cursor:pointer;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" onclick="getopenhours('${prevdate}','${req.params.librarycode}','${req.params.librarymorecode} ', '${req.params.lang}')">${translations[lang]["prevtext"]}</a>
+                    <a onclick="getopenhours('${prevdate}','${req.params.librarycode}','${req.params.librarymorecode} ', '${req.params.lang}')">${translations[lang]["prevtext"]}</a>
                  </div>`;
             }
 
@@ -587,7 +587,7 @@ async function getOpeningHours(req, res) {
 
             html_ += 
                 `<div class="nextweek">
-                    <a style="cursor:pointer;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" onclick="getopenhours('${nextdate}','${req.params.librarycode}','${req.params.librarymorecode} ', '${req.params.lang}')">${translations[lang]["nexttext"]}</a>
+                    <a onclick="getopenhours('${nextdate}','${req.params.librarycode}','${req.params.librarymorecode} ', '${req.params.lang}')">${translations[lang]["nexttext"]}</a>
                  </div>
             </div>
             <div id="moretext">${moretext}</div>
