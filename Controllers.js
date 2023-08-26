@@ -289,9 +289,9 @@ async function getOpeningHours_new(req, res) {
         let week_start_date = formatDateForHTMLWeekDays(new Date(week_start))
         let week_end_date = formatDateForHTMLWeekDays(new Date(week_end))
         
-        let html =`<div class="openhourscontainer" style="overflow:auto">
-                        <div style="">
-                            <div style="display:none" class="weekheader">Vecka 04</div>
+        let html =`<div class="openhourscontainer">
+                        <div>
+                            <div class="weekheader">Vecka 04</div>
                             <span class="weekdates">${week_start_date}-${week_end_date}</span>
                         </div>`
         for (var day = from; day <= to; day.setDate(day.getDate() + 1)) {
@@ -386,11 +386,11 @@ async function getOpeningHours_new(req, res) {
             }
             
         }
-        html += `<div class="navigatedays" style="overflow:auto;">`;
+        html += `<div class="navigatedays">`;
             if (prevdate != "") {
                 html += 
                 `<div class="previousweek">
-                    <a style="cursor:pointer;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" onclick="getopenhours('${prevdate}','${req.params.librarycode}','${req.params.librarymorecode} ', '${req.params.lang}')">${translations[lang]["prevtext"]}</a>
+                    <a onclick="getopenhours('${prevdate}','${req.params.librarycode}','${req.params.librarymorecode} ', '${req.params.lang}')">${translations[lang]["prevtext"]}</a>
                  </div>`;
             }
 
@@ -401,7 +401,7 @@ async function getOpeningHours_new(req, res) {
 
             html += 
                 `<div class="nextweek">
-                    <a style="cursor:pointer;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" onclick="getopenhours('${nextdate}','${req.params.librarycode}','${req.params.librarymorecode} ', '${req.params.lang}')">${translations[lang]["nexttext"]}</a>
+                    <a onclick="getopenhours('${nextdate}','${req.params.librarycode}','${req.params.librarymorecode} ', '${req.params.lang}')">${translations[lang]["nexttext"]}</a>
                  </div>
             </div>
             <div id="moretext">${openinfotext_1} ${openinfotext_2}</div>
