@@ -735,6 +735,168 @@ async function getOpeningHours_start(req, res) {
     }
 }
 
+async function getOpeningHours_json(req, res) {
+    let json;
+    const lang = req.params.lang || 'en';
+    const givenDate = new Date(req.params.datetoget);
+    let week_start = getFirstDayOfWeek(givenDate)
+    let week_end = getLastDayOfWeek(givenDate);
+    let week_start_current = getFirstDayOfWeek(new Date())
+    let prevdate
+    let nextdate    
+
+    //Datum för bläddringsknappar
+    //Visa inte föregåendeknapp om aktuell vecka visas.
+    if (week_start_current == week_start) {
+        prevdate = "";
+    } else {
+        let pd = new Date(req.params.datetoget);
+        pd.setDate(pd.getDate() -7)
+        prevdate = pd.toLocaleDateString("sv-SE")
+    }
+
+    let nd = new Date(req.params.datetoget);
+    nd.setDate(nd.getDate() +7)
+    nextdate = nd.toLocaleDateString("sv-SE")
+
+    try {
+        //hämta resolution för area(id = 1)
+        let resolution_res = await eventModel.readResolution(req.params.system, 1);
+        if (resolution_res.length > 0) {
+            for(let i=0;i<resolution_res.length;i++) {
+                resolution = resolution_res[i]['resolution'];
+            }
+        }
+        
+        //Gå igenom veckan
+        var from = new Date(week_start);
+        var to = new Date(week_end);
+        let openinghoursarr
+        let openingmorehoursarr
+        let libraryname;
+        let openinfotext_1;
+        let openinfotext_2;
+        let closedtext;
+        if(req.params.librarycode == process.env.MAIN_LIBRARY_CODE ) {
+            if(lang == 'en') {
+                libraryname = "Main Library";
+                openinfotext_1 = "* Note! Access with KTH access card mornings 8–9";
+                openinfotext_2 = "";
+                closedtext = "Closed";
+            } else {
+                libraryname = "Huvudbiblioteket";
+                openinfotext_1 = "* Obs! Morgnar 8–9";
+                openinfotext_2 = "krävs KTH passerkort";
+                closedtext = "Stängt";
+            }
+        }
+
+        //Skapa html som kan hämtas och visas på öppettidersidan i polopoly
+        let week_start_date = formatDateForHTMLWeekDays(new Date(week_start))
+        let week_end_date = formatDateForHTMLWeekDays(new Date(week_end))
+
+        json = `{
+            "week" : "${week_start_date}–${week_end_date}",
+            "days" : [`
+        
+        let dayindex = 0;
+        for (var day = from; day <= to; day.setDate(day.getDate() + 1)) {
+            
+            if (dayindex == 0) {
+                json += `{`
+            } else {
+                json += `,{`
+            }
+            dayindex++
+            moreopen = false;
+            openinghoursarr = await getNonDefaultOpeninghours(req.params.system, day.toLocaleDateString(), req.params.librarycode, resolution )
+            openingmorehoursarr = await getNonDefaultOpeninghours(req.params.system, day.toLocaleDateString(), req.params.librarymorecode, resolution )
+            openinghoursarr[0] != "" && openinghoursarr[0] != null ? ismanned = true : ismanned = false;    
+            openingmorehoursarr[0] != "" && openingmorehoursarr[0] != null ? ismoreopen = true : ismoreopen = false;
+            !ismoreopen && !ismanned ? libaryclosed = true : libaryclosed = false;
+            //Dagens första tid
+            if (openinghoursarr[0] != "" && openinghoursarr[0] != null) {
+                //finns det en meröppettid?
+                if (openingmorehoursarr[0] != "" && openingmorehoursarr[0] != null) {
+                    moreopen = true;
+                    if(parseFloat(openinghoursarr[0]) < parseFloat(openingmorehoursarr[0])) {
+                        firsthour = openinghoursarr[0];
+                    } else {
+                        firsthour = openingmorehoursarr[0];
+                    }
+                } else {
+                    //ingen meröppettid finns alltså är vanliga öppettiden första
+                    firsthour = openinghoursarr[0];
+                }
+            } else {
+                //finns det en meröppettid så gäller den som första
+                if (openingmorehoursarr[0] != "" && openingmorehoursarr[0] != null) { 
+                    firsthour = openingmorehoursarr[0];
+                }
+            }
+
+            //Dagens sista tid
+            if (openinghoursarr[1] != "" && openinghoursarr[1] != null) {
+                //finns det en meröppettid?
+                if (openingmorehoursarr[1] != "" && openingmorehoursarr[1] != null) { 
+                    moreopen = true;
+                    if(parseFloat(openinghoursarr[1]) > parseFloat(openingmorehoursarr[1])) {
+                        lasthour = openinghoursarr[1];
+                    } else {
+                        lasthour = openingmorehoursarr[1];
+                    }
+                } else {
+                    //ingen meröppettid finns alltså är vanliga öppettiden sista
+                    lasthour = openinghoursarr[1];
+                }
+            } else {
+                //finns det en meröppettid så gäller den som sista
+                if (openingmorehoursarr[1] != "" && openingmorehoursarr[1] != null) { 
+                    lasthour = openingmorehoursarr[1];
+                }
+            }
+            
+            // Main Library
+            if(req.params.librarycode == process.env.MAIN_LIBRARY_CODE ) {
+                if(!libaryclosed) {
+                    if(ismanned) {
+                        json += `
+                            "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
+                            "hours" : "${firsthour.replaceAll('.00','')}${moreopen ? '*' : ''}–${lasthour.replaceAll('.00','')}"
+                        }`
+                    } 
+                } else {
+                    json += `
+                        "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
+                        "hours" : "${closedtext}"
+                    }`
+                } 
+            }
+            
+        } // Slut loop days
+        json += `
+            ],
+            "previous" : "${prevdate != "" ? "true" : "false"}",
+            "next" : "true",`
+
+        //Inga meröppettider existerar - visa ingen mertext
+        if (json.indexOf("*") === -1) {
+            openinfotext_1 = "";
+        }
+
+        json += `
+            "moretext" : "${openinfotext_1} ${openinfotext_2}",
+            "prevdate" : "${prevdate}",
+            "nextdate" : "${nextdate}"
+        }`
+
+        res.send(JSON.parse(json))
+    } catch (err) {
+        res.send("error: " + err)
+    }
+}
+
+
 async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolution) {
     try {
         let d = new Date(datetocheck)
@@ -838,6 +1000,7 @@ module.exports = {
     updateEntrySetReminded,
     substrInBetween,
     getOpeningHours_new,
+    getOpeningHours_json,
     getOpeningHours,
     getOpeningHours_start,
     truncate

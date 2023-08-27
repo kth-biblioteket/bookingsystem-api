@@ -49,6 +49,8 @@ apiRoutes.get("/openinghours/:system/:datetoget/:librarycode/:librarymorecode/:l
 
 apiRoutes.get("/openinghoursnew/:system/:datetoget/:librarycode/:librarymorecode/:lang", Controller.getOpeningHours_new)
 
+apiRoutes.get("/openinghoursjson/:system/:datetoget/:librarycode/:librarymorecode/:lang", Controller.getOpeningHours_json)
+
 apiRoutes.get("/openinghoursstart/:system/:datetoget/:librarycode/:librarymorecode/:lang", Controller.getOpeningHours_start)
 
 app.use(process.env.API_ROUTES_PATH, apiRoutes);
