@@ -791,6 +791,20 @@ async function getOpeningHours_json(req, res) {
             }
         }
 
+        if(req.params.librarycode == process.env.SODERTALJE_LIBRARY_CODE ) {
+            if(lang == 'en') {
+                libraryname = "Södertälje";
+                openinfotext_1 = "* Obemannat utanför ordinarie öppettider";
+                openinfotext_2 = "";
+                closedtext = "Closed";
+            } else {
+                libraryname = "Södertälje";
+                openinfotext_1 = "* Unmanned outside regular hours";
+                openinfotext_2 = "";
+                closedtext = "Stängt";
+            }
+        }
+
         //Skapa html som kan hämtas och visas på öppettidersidan i polopoly
         let week_start_date = formatDateForHTMLWeekDays(new Date(week_start))
         let week_end_date = formatDateForHTMLWeekDays(new Date(week_end))
@@ -872,6 +886,23 @@ async function getOpeningHours_json(req, res) {
                     }`
                 } 
             }
+
+            // Södertälje
+            if(req.params.librarycode == process.env.SODERTALJE_LIBRARY_CODE ) {
+                if(!libaryclosed) {
+                    if(ismanned) {
+                        json += `
+                            "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
+                            "hours" : "${openinghoursarr[0].replaceAll('.00','')}–${openinghoursarr[1].replaceAll('.00','')} (${openingmorehoursarr[0].replaceAll('.00','')}–${openingmorehoursarr[1].replaceAll('.00','')}${moreopen ? '*' : ''})"
+                        }`
+                    } 
+                } else {
+                    json += `
+                        "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
+                        "hours" : "${closedtext}"
+                    }`
+                } 
+            }
             
         } // Slut loop days
         json += `
@@ -895,7 +926,6 @@ async function getOpeningHours_json(req, res) {
         res.send("error: " + err)
     }
 }
-
 
 async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolution) {
     try {
