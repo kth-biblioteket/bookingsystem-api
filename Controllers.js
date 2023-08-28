@@ -777,6 +777,7 @@ async function getOpeningHours_json(req, res) {
         let openinfotext_1;
         let openinfotext_2;
         let closedtext;
+        let unmannedtext;
         if(req.params.librarycode == process.env.MAIN_LIBRARY_CODE ) {
             if(lang == 'en') {
                 libraryname = "Main Library";
@@ -792,6 +793,7 @@ async function getOpeningHours_json(req, res) {
         }
 
         if(req.params.librarycode == process.env.SODERTALJE_LIBRARY_CODE ) {
+            unmannedtext = translations[lang]["unmannedtext"]
             if(lang == 'en') {
                 libraryname = "Södertälje";
                 openinfotext_1 = "* Obemannat utanför ordinarie öppettider";
@@ -895,7 +897,12 @@ async function getOpeningHours_json(req, res) {
                             "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
                             "hours" : "${openinghoursarr[0].replaceAll('.00','')}–${openinghoursarr[1].replaceAll('.00','')} (${openingmorehoursarr[0].replaceAll('.00','')}–${openingmorehoursarr[1].replaceAll('.00','')}${moreopen ? '*' : ''})"
                         }`
-                    } 
+                    } else {
+                        json += `
+                            "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
+                            "hours" : "${unmannedtext} (${openingmorehoursarr[0].replaceAll('.00','')}–${openingmorehoursarr[1].replaceAll('.00','')}${moreopen ? '*' : ''})"
+                        }`
+                    }
                 } else {
                     json += `
                         "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
