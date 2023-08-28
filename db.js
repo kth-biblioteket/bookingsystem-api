@@ -11,7 +11,8 @@ const dbConfig = {
 function createConnection(system) {
   const connectionConfig = {
     ...dbConfig,
-    host: `${system}-db`,
+    //host: `${system}-db`,
+    host: 'apps-old.lib.kth.se'
   };
   return mysql.createConnection(connectionConfig);
 }

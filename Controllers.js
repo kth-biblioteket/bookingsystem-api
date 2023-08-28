@@ -796,12 +796,12 @@ async function getOpeningHours_json(req, res) {
             unmannedtext = translations[lang]["unmannedtext"]
             if(lang == 'en') {
                 libraryname = "Södertälje";
-                openinfotext_1 = "* Obemannat utanför ordinarie öppettider";
+                openinfotext_1 = "* Unmanned outside regular hours";
                 openinfotext_2 = "";
                 closedtext = "Closed";
             } else {
                 libraryname = "Södertälje";
-                openinfotext_1 = "* Unmanned outside regular hours";
+                openinfotext_1 = "* Obemannat utanför ordinarie öppettider";
                 openinfotext_2 = "";
                 closedtext = "Stängt";
             }
