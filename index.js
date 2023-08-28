@@ -45,13 +45,13 @@ apiRoutes.put("/entrysetconfirmcode/:system/:id/:confirmationcode", VerifyToken,
 
 apiRoutes.put("/entrysetreminded/:system/:id/", VerifyToken, Controller.updateEntrySetReminded)
 
-apiRoutes.get("/openinghours/:system/:datetoget/:librarycode/:librarymorecode/:lang", Controller.getOpeningHours)
+apiRoutes.get("/openinghours/:system/:datetoget/:librarycode/:librarymorecode/:lang", Controller.getOpeningHours_html)
 
-apiRoutes.get("/openinghoursnew/:system/:datetoget/:librarycode/:librarymorecode/:lang", Controller.getOpeningHours_new)
+apiRoutes.get("/openinghoursnew/:system/:datetoget/:librarycode/:librarymorecode/:lang", Controller.getOpeningHours_html_new)
 
 apiRoutes.get("/openinghoursjson/:system/:datetoget/:librarycode/:librarymorecode/:lang", Controller.getOpeningHours_json)
 
-apiRoutes.get("/openinghoursstart/:system/:datetoget/:librarycode/:librarymorecode/:lang", Controller.getOpeningHours_start)
+apiRoutes.get("/openinghoursstart/:system/:datetoget/:librarycode/:librarymorecode/:lang", Controller.getOpeningHours_html_start)
 
 app.use(process.env.API_ROUTES_PATH, apiRoutes);
 

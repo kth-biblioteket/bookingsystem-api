@@ -230,7 +230,7 @@ function substrInBetween(whole_str, str1, str2) {
     );
 }
 
-async function getOpeningHours_new(req, res) {
+async function getOpeningHours_html_new(req, res) {
     const lang = req.params.lang || 'en';
     const givenDate = new Date(req.params.datetoget);
     let week_start = getFirstDayOfWeek(givenDate)
@@ -413,7 +413,7 @@ async function getOpeningHours_new(req, res) {
     }
 }
 
-async function getOpeningHours(req, res) {
+async function getOpeningHours_html(req, res) {
     const lang = req.params.lang || 'en';
     closedtext = translations[lang]["closedtext"]
     unmannedtext = translations[lang]["unmannedtext"]
@@ -598,7 +598,7 @@ async function getOpeningHours(req, res) {
     }
 }
 
-async function getOpeningHours_start(req, res) {
+async function getOpeningHours_html_start(req, res) {
     const lang = req.params.lang || 'en';
     closedtext = translations[lang]["closedtext"]
     unmannedtext = translations[lang]["unmannedtext"]
@@ -1029,9 +1029,9 @@ module.exports = {
     updateEntryConfirmationCode,
     updateEntrySetReminded,
     substrInBetween,
-    getOpeningHours_new,
+    getOpeningHours_html_new,
     getOpeningHours_json,
-    getOpeningHours,
-    getOpeningHours_start,
+    getOpeningHours_html,
+    getOpeningHours_html_start,
     truncate
 };
