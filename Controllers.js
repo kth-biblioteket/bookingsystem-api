@@ -920,6 +920,7 @@ async function getOpeningHours_json(req, res) {
         //Inga meröppettider existerar - visa ingen mertext
         if (json.indexOf("*") === -1) {
             openinfotext_1 = "";
+            openinfotext_2 = "";
         }
 
         json += `
