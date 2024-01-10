@@ -98,8 +98,8 @@ const readRoomBookingsForToday = (system, area_id, room_id) => {
                     E.create_by AS entry_create_by
                     FROM mrbs_entry E, mrbs_room R
                     WHERE E.room_id = R.id
-                    AND R.area_id = 1
-                    AND E.room_id = 1
+                    AND R.area_id = ?
+                    AND E.room_id = ?
                     AND R.disabled = 0
                     AND start_time <= UNIX_TIMESTAMP(CONCAT(CURDATE(), ' 21:00:00')) AND end_time > UNIX_TIMESTAMP(CONCAT(CURDATE(), ' 07:00:00'))
                     ORDER BY start_time`;
