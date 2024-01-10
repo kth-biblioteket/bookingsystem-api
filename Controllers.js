@@ -75,7 +75,7 @@ async function getRoomsAvailability(req, res) {
 
 async function getRoomBookingsForToday(req, res) {
     try {
-        roomjson = Model.readRoomBookingsForToday(req.params.system, req.params.area_id, req.params.room_id)
+        roomjson = await Model.readRoomBookingsForToday(req.params.system, req.params.area_id, req.params.room_id)
 
         res.send(roomjson)
     } catch (err) {

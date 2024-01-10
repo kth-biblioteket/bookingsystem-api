@@ -3,3 +3,6 @@ config.js
 .env
 *.env
 test.js
+docker-compose-dev.yml
+Dockerfile-dev
+package-dev.json
