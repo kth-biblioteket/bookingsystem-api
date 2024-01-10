@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-const eventModel = require('./Models');
+const Model = require('./Models');
 
 const axios = require('axios')
 const fs = require("fs");
@@ -12,7 +12,7 @@ const { get } = require('http');
 
 async function readEntry(req, res) {
     try {
-        let result = await eventModel.readEntry(req.params.system, req.params.id)
+        let result = await Model.readEntry(req.params.system, req.params.id)
         res.send(result)
     } catch (err) {
         res.send("error: " + err)
@@ -22,17 +22,17 @@ async function readEntry(req, res) {
 async function getRoomsAvailability(req, res) {
     try {
         //Hämta area
-        let area = await eventModel.readArea(req.params.system, req.params.area_id)
+        let area = await Model.readArea(req.params.system, req.params.area_id)
         
         //Hämta rum för arean
-        let rooms = await eventModel.readRooms(req.params.system, req.params.area_id)
+        let rooms = await Model.readRooms(req.params.system, req.params.area_id)
 
         //Gå igenom alla rum och kontrollera status för aktuell timme
         let roomjson = [];
         for(i=0 ; i < rooms.length; i++) {
             let status;
             //Hämta aktuellt rums bokningar för angiven timme(via timestamp)
-            let roombookings = await eventModel.readBookingsForHour(req.params.system, rooms[i].id, req.params.timestamp)
+            let roombookings = await Model.readBookingsForHour(req.params.system, rooms[i].id, req.params.timestamp)
             let roombookingrow
             //om timmen i timestamp är utanför öppettider(<$area->morningstarts ELLER >$area->eveningends) för rummen så returnera status unavailable
             let timestamphour = new Date(req.params.timestamp * 1000).toLocaleTimeString("sv-SE", { hour: "2-digit"})
@@ -75,7 +75,7 @@ async function getRoomsAvailability(req, res) {
 
 async function getRoomBookingsForToday(req, res) {
     try {
-        roomjson = model.readRoomBookingsForToday(req.params.system, req.params.area_id, req.params.room_id)
+        roomjson = Model.readRoomBookingsForToday(req.params.system, req.params.area_id, req.params.room_id)
 
         res.send(roomjson)
     } catch (err) {
@@ -100,7 +100,7 @@ async function confirmBooking(req, res) {
     }
 
     try {
-        let entry = await eventModel.readEntryFromConfirmationCode(req.params.system, req.params.confirmation_code)
+        let entry = await Model.readEntryFromConfirmationCode(req.params.system, req.params.confirmation_code)
         if (entry.length > 0) {
             entry.forEach(async entryrow => {
                 let currenttimestamp = Math.floor(Date.now() /1000);
@@ -108,7 +108,7 @@ async function confirmBooking(req, res) {
                 //Kvittera bara om inom intervallet 15 min före/efter start_time
                 if (currenttimestamp >= slotinseconds - 15 * 60 && currenttimestamp <= slotinseconds + 15 * 60 ) {
                     //Uppdatera bokning till confirmed(status = noll)
-                    let updateEntry = await eventModel.updateEntryConfirmed(req.params.system, entryrow.confirmation_code)
+                    let updateEntry = await Model.updateEntryConfirmed(req.params.system, entryrow.confirmation_code)
                     if (updateEntry.affectedRows != 1) {
                         confirmation = false;
                         res.render('pages/confirmbooking', {
@@ -126,7 +126,7 @@ async function confirmBooking(req, res) {
                         }) 
                     } else {
                         //
-                        let EntryWithRoomAndArea = await eventModel.readEntryWithRoomAndArea(req.params.system, entryrow.id)
+                        let EntryWithRoomAndArea = await Model.readEntryWithRoomAndArea(req.params.system, entryrow.id)
                         let view = 'day'
                         EntryWithRoomAndArea.forEach(EntryWithRoomAndArea_row => {
                             if (EntryWithRoomAndArea_row.default_view == 0) {
@@ -206,7 +206,7 @@ async function confirmBooking(req, res) {
 
 async function getReminderBookings(req, res) {
     try {
-        let bookings = await eventModel.readReminderBookings(req.params.system, req.params.fromtime, req.params.totime, req.params.status, req.params.type )
+        let bookings = await Model.readReminderBookings(req.params.system, req.params.fromtime, req.params.totime, req.params.status, req.params.type )
         res.send(bookings)
     } catch (err) {
         res.send("error: " + err)
@@ -215,7 +215,7 @@ async function getReminderBookings(req, res) {
 
 async function updateEntryConfirmationCode(req, res) {
     try {
-        let result = await eventModel.updateEntryConfirmationCode(req.params.system, req.params.id, req.params.confirmationcode)
+        let result = await Model.updateEntryConfirmationCode(req.params.system, req.params.id, req.params.confirmationcode)
         res.send(result)
     } catch (err) {
         res.send("error: " + err)
@@ -224,7 +224,7 @@ async function updateEntryConfirmationCode(req, res) {
 
 async function updateEntrySetReminded(req, res) {
     try {
-        let result = await eventModel.updateEntrySetReminded(req.params.system, req.params.id)
+        let result = await Model.updateEntrySetReminded(req.params.system, req.params.id)
         res.send(result)
     } catch (err) {
         res.send("error: " + err)
@@ -266,7 +266,7 @@ async function getOpeningHours_html_new(req, res) {
 
     try {
         //hämta resolution för area(id = 1)
-        let resolution_res = await eventModel.readResolution(req.params.system, 1);
+        let resolution_res = await Model.readResolution(req.params.system, 1);
         if (resolution_res.length > 0) {
             for(let i=0;i<resolution_res.length;i++) {
                 resolution = resolution_res[i]['resolution'];
@@ -469,13 +469,13 @@ async function getOpeningHours_html(req, res) {
 
     try {
         //hämta resolution för area(id = 1)
-        let resolution_res = await eventModel.readResolution(req.params.system, 1);
+        let resolution_res = await Model.readResolution(req.params.system, 1);
         if (resolution_res.length > 0) {
             for(let i=0;i<resolution_res.length;i++) {
                 resolution = resolution_res[i]['resolution'];
             }
         }
-        let roomstartend = await eventModel.readRoomStartEndWeek(req.params.system, req.params.librarycode)
+        let roomstartend = await Model.readRoomStartEndWeek(req.params.system, req.params.librarycode)
         if (roomstartend.length > 0) {
             for(let i=0;i<roomstartend.length;i++) {
                 roomstartend[i]["monday"] !== null ? dayarray["monday"] = roomstartend[i]["monday"] : 0
@@ -497,7 +497,7 @@ async function getOpeningHours_html(req, res) {
         //Hitta första lediga tid och sista lediga tid
         //Ta bort möjligheterna till seriebokningar(mrbs config)
         
-        let roomcloseddays = await eventModel.readRoomClosedDays(req.params.system, req.params.librarycode, week_start, week_end)
+        let roomcloseddays = await Model.readRoomClosedDays(req.params.system, req.params.librarycode, week_start, week_end)
         
         if (roomcloseddays.length > 0) {
             for(let i=0;i<roomcloseddays.length;i++) {
@@ -518,7 +518,7 @@ async function getOpeningHours_html(req, res) {
         }
 
         // Meröppet
-        let roomstartendmore = await eventModel.readRoomStartEndWeek(req.params.system, req.params.librarymorecode)
+        let roomstartendmore = await Model.readRoomStartEndWeek(req.params.system, req.params.librarymorecode)
         if (roomstartendmore.length > 0) {
             for(let i=0;i<roomstartendmore.length;i++) {
                 roomstartendmore[i]["monday"] !== null ? daymorearray["monday"] = ' (' + roomstartendmore[i]["monday"] + '*)': 0
@@ -532,7 +532,7 @@ async function getOpeningHours_html(req, res) {
         } else {
             // Settings för rummets start och end saknas!
         }
-        let roomcloseddaysmore = await eventModel.readRoomClosedDays(req.params.system, req.params.librarymorecode, week_start, week_end)
+        let roomcloseddaysmore = await Model.readRoomClosedDays(req.params.system, req.params.librarymorecode, week_start, week_end)
         if (roomcloseddaysmore.length > 0) {
             for(let i=0;i<roomcloseddaysmore.length;i++) {
                 let non_default_openinghours = await getNonDefaultOpeninghours(req.params.system, roomcloseddaysmore[i].datetoget, req.params.librarymorecode, resolution )
@@ -617,7 +617,7 @@ async function getOpeningHours_html_start(req, res) {
 
     try {
         //hämta resolution för area(id = 1)
-        let resolution_res = await eventModel.readResolution(req.params.system, 1);
+        let resolution_res = await Model.readResolution(req.params.system, 1);
         if (resolution_res.length > 0) {
             for(let i=0;i<resolution_res.length;i++) {
                 resolution = resolution_res[i]['resolution'];
@@ -772,7 +772,7 @@ async function getOpeningHours_json(req, res) {
 
     try {
         //hämta resolution för area(id = 1)
-        let resolution_res = await eventModel.readResolution(req.params.system, 1);
+        let resolution_res = await Model.readResolution(req.params.system, 1);
         if (resolution_res.length > 0) {
             for(let i=0;i<resolution_res.length;i++) {
                 resolution = resolution_res[i]['resolution'];
@@ -950,7 +950,7 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
     try {
         let d = new Date(datetocheck)
         let dayname = d.toLocaleDateString('en-GB', {  weekday: 'long'}).toLowerCase();
-        let RoomStartEndDay = await eventModel.readRoomStartEndDay(system, dayname, room_id);
+        let RoomStartEndDay = await Model.readRoomStartEndDay(system, dayname, room_id);
         let n_time_slots
         let morning_slot_seconds
         if (RoomStartEndDay.length > 0) {
@@ -969,7 +969,7 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
         
         if (morning_slot_seconds) {
             for (let s = morning_slot_seconds;s <= evening_slot_seconds;s += resolution) {
-                let slot_free_res = await eventModel.checkifslotisfree(system, datetocheck, room_id ,s);
+                let slot_free_res = await Model.checkifslotisfree(system, datetocheck, room_id ,s);
                 // om inga rader returneras så är sloten ledig
                 if (slot_free_res.length == 0) {
                     //om fri = spara som öppningstid för dagen
