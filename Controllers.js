@@ -8,6 +8,7 @@ const path = require('path');
 
 const translations = require('./translations/translations.json');
 const cookieParser = require('cookie-parser');
+const { get } = require('http');
 
 async function readEntry(req, res) {
     try {
@@ -65,6 +66,16 @@ async function getRoomsAvailability(req, res) {
                 }
             }
         }
+
+        res.send(roomjson)
+    } catch (err) {
+        res.send("error: " + err)
+    }
+}
+
+async function getRoomBookingsForToday(req, res) {
+    try {
+        roomjson = model.readRoomBookingsForToday(req.params.system, req.params.area_id, req.params.room_id)
 
         res.send(roomjson)
     } catch (err) {
@@ -1032,6 +1043,7 @@ function get_n_time_slots(morningstarts, morningstarts_minutes, eveningends, eve
 module.exports = {
     readEntry,
     getRoomsAvailability,
+    getRoomBookingsForToday,
     confirmBooking,
     getReminderBookings,
     updateEntryConfirmationCode,

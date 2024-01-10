@@ -84,6 +84,34 @@ const readBookingsForHour = (system, room_id, timestamp) => {
     })
 };
 
+const readRoomBookingsForToday = (system, room_id, timestamp) => {
+  return new Promise(function (resolve, reject) {
+      const connection = database.createConnection(system);
+      const query = `SELECT R.room_name, R.id AS room_id, FROM_UNIXTIME(start_time) as start_time, FROM_UNIXTIME(end_time) as end_time, name, repeat_id,
+                          E.id AS entry_id, type,
+                          E.description AS entry_description, status,
+                          E.create_by AS entry_create_by
+                    FROM mrbs_entry E, mrbs_room R
+                    WHERE E.room_id = R.id
+                      AND R.area_id = ?
+                      AND E.room_id = ?
+                      AND R.disabled = 0
+                      AND start_time <= UNIX_TIMESTAMP(CONCAT(CURDATE(), ' 21:00:00')) AND end_time > UNIX_TIMESTAMP(CONCAT(CURDATE(), ' 07:00:00'))
+                    ORDER BY start_time;`;
+      params = [area_id,room_id]
+
+      connection.query(query, params, (err, results, fields) => {
+          if (err) {
+            console.error('Error executing query:', err);
+            reject(err.message)
+          }
+          const successMessage = "Success"
+          connection.end();
+          resolve(results);
+        });
+  })
+};
+
 //Hämta bokning via ID och system 
 const readEntryFromConfirmationCode = (system, confirmation_code) => {
     return new Promise(function (resolve, reject) {
@@ -384,6 +412,7 @@ module.exports = {
     readArea,
     readRooms,
     readBookingsForHour,
+    readRoomBookingsForToday,
     readEntryFromConfirmationCode,
     readEntryWithRoomAndArea,
     updateEntryConfirmed,
