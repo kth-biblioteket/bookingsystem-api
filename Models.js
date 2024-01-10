@@ -84,7 +84,7 @@ const readBookingsForHour = (system, room_id, timestamp) => {
     })
 };
 
-const readRoomBookingsForToday = (system, room_id, timestamp) => {
+const readRoomBookingsForToday = (system, area_id, room_id) => {
   return new Promise(function (resolve, reject) {
       const connection = database.createConnection(system);
       const query = `SELECT R.room_name, R.id AS room_id, FROM_UNIXTIME(start_time) as start_time, FROM_UNIXTIME(end_time) as end_time, name, repeat_id,
