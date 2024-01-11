@@ -82,13 +82,13 @@ async function getRoomBookingsForToday(req, res) {
         const roominfo = room[0]
 
         const today = new Date();
-        const dayName = today.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+        const dayName = today.toLocaleDateString('en-US', { weekday: 'long' });
         const todayDay = today.getDate();
         const todayMonth = today.getMonth() + 1; 
     
-        const morningstarts = roominfo['morningstarts_' + dayName]
+        const morningstarts = roominfo['morningstarts_' + dayName.toLowerCase()]
 
-        const eveningends = roominfo['eveningends_' + dayName]
+        const eveningends = roominfo['eveningends_' + dayName.toLowerCase()]
 
         const schedule = {};
 
