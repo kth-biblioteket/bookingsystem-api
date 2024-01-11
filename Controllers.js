@@ -83,6 +83,15 @@ async function getRoomBookingsForToday(req, res) {
 
         const today = new Date();
         const dayName = today.toLocaleDateString('en-US', { weekday: 'long' });
+
+        // Get day and month in the format "dd/mm"
+        const formattedDate = today.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit' });
+
+        // Get time in the format "hh"
+        const formattedTime = today.toLocaleTimeString('en-US', { hour: '2-digit', hour12: false });
+
+
+
         const todayDay = today.getDate();
         const todayMonth = today.getMonth() + 1; 
     

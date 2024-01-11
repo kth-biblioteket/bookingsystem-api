@@ -110,8 +110,8 @@ const readRoomBookingsForToday = (system, area_id, room_id) => {
       const connection = database.createConnection(system);
       const query = `SELECT R.room_name,
                     R.id AS room_id,
-                    FROM_UNIXTIME(start_time) as start_time,
-                    FROM_UNIXTIME(end_time) as end_time,
+                    CONVERT_TZ(FROM_UNIXTIME(start_time), 'UTC', 'Europe/Stockholm') as start_time,
+                    CONVERT_TZ(FROM_UNIXTIME(end_time), 'UTC', 'Europe/Stockholm') as end_time,
                     name, repeat_id,
                     E.id AS entry_id,
                     type,E.description AS entry_description,
@@ -122,7 +122,7 @@ const readRoomBookingsForToday = (system, area_id, room_id) => {
                     AND R.area_id = ?
                     AND E.room_id = ?
                     AND R.disabled = 0
-                    AND start_time <= UNIX_TIMESTAMP(CONCAT(CURDATE(), ' 21:00:00')) AND end_time > UNIX_TIMESTAMP(CONCAT(CURDATE(), ' 07:00:00'))
+                    AND start_time <= UNIX_TIMESTAMP(CONCAT(CURDATE(), ' 23:00:00')) AND end_time > UNIX_TIMESTAMP(CONCAT(CURDATE(), ' 05:00:00'))
                     ORDER BY start_time`;
       params = [area_id,room_id]
 
