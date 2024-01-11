@@ -70,7 +70,7 @@
                 <% if (schedule[hour] && schedule[hour].length> 0) { %>
                     <% if (schedule[hour][0] && schedule[hour][0].rowspan> 0) { %>
                         <td class="booked <%-schedule[hour][0].status==0 ? 'confirmed' : 'tentative' %>" rowspan="<%= schedule[hour][0].rowspan %>">
-                            <%= schedule[hour][0].name %>
+                            Booked
                         </td>
                     <% } %>
                 <% } else { %>
