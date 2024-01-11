@@ -75,22 +75,14 @@ async function getRoomsAvailability(req, res) {
 
 async function getRoomBookingsForToday(req, res) {
     try {
-        const roomjson = await Model.readRoomBookingsForToday(req.params.system, req.params.area_id, req.params.room_id)
+        const roomjson = await Model.readRoomBookingsForToday(req.params.system, req.params.area_id, req.params.room_number)
 
-        const room = await Model.readRoom(req.params.system, req.params.area_id, req.params.room_id)
+        const room = await Model.readRoomByNumber(req.params.system, req.params.area_id, req.params.room_number)
 
         const roominfo = room[0]
 
         const today = new Date();
         const dayName = today.toLocaleDateString('en-US', { weekday: 'long' });
-
-        // Get day and month in the format "dd/mm"
-        const formattedDate = today.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit' });
-
-        // Get time in the format "hh"
-        const formattedTime = today.toLocaleTimeString('en-US', { hour: '2-digit', hour12: false });
-
-
 
         const todayDay = today.getDate();
         const todayMonth = today.getMonth() + 1; 

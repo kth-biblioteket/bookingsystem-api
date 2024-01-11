@@ -79,7 +79,28 @@ const readRoom = (system, area_id, room_id) => {
   })
 };
 
-//Hämta bokningsstatus för ett rum via room_ID, timestamo och system 
+//Hämta ett rum för area via room_ID, area_ID och system 
+const readRoomByNumber = (system, area_id, room_number) => {
+  return new Promise(function (resolve, reject) {
+      const connection = database.createConnection(system);
+      const query = `SELECT * FROM mrbs_room
+                   WHERE area_id = ?
+                   AND room_number = ?
+                   ORDER BY sort_key`;
+      params = [area_id, room_number]
+      connection.query(query, params, (err, results, fields) => {
+          if (err) {
+            console.error('Error executing query:', err);
+            reject(err.message)
+          }
+          const successMessage = "Success"
+          connection.end();
+          resolve(results);
+        });
+  })
+};
+
+//Hämta bokningsstatus för ett rum via room_ID, timestamp och system 
 const readBookingsForHour = (system, room_id, timestamp) => {
     return new Promise(function (resolve, reject) {
         const connection = database.createConnection(system);
@@ -105,7 +126,7 @@ const readBookingsForHour = (system, room_id, timestamp) => {
     })
 };
 
-const readRoomBookingsForToday = (system, area_id, room_id) => {
+const readRoomBookingsForToday = (system, area_id, room_number) => {
   return new Promise(function (resolve, reject) {
       const connection = database.createConnection(system);
       const query = `SELECT R.room_name,
@@ -120,11 +141,11 @@ const readRoomBookingsForToday = (system, area_id, room_id) => {
                     FROM mrbs_entry E, mrbs_room R
                     WHERE E.room_id = R.id
                     AND R.area_id = ?
-                    AND E.room_id = ?
+                    AND R.room_number = ?
                     AND R.disabled = 0
                     AND start_time <= UNIX_TIMESTAMP(CONCAT(CURDATE(), ' 23:00:00')) AND end_time > UNIX_TIMESTAMP(CONCAT(CURDATE(), ' 05:00:00'))
                     ORDER BY start_time`;
-      params = [area_id,room_id]
+      params = [area_id,room_number]
 
       connection.query(query, params, (err, results, fields) => {
           if (err) {
@@ -438,6 +459,7 @@ module.exports = {
     readArea,
     readRooms,
     readRoom,
+    readRoomByNumber,
     readBookingsForHour,
     readRoomBookingsForToday,
     readEntryFromConfirmationCode,

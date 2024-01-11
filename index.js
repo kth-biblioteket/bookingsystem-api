@@ -37,7 +37,7 @@ apiRoutes.get("/entry/:system/:id", Controller.readEntry)
 
 apiRoutes.get("/roomsavailability/:system/:area_id/:timestamp", Controller.getRoomsAvailability)
 
-apiRoutes.get("/roombookingsfortoday/:system/:area_id/:room_id", Controller.getRoomBookingsForToday)
+apiRoutes.get("/roombookingsfortoday/:system/:area_id/:room_number", Controller.getRoomBookingsForToday)
 
 apiRoutes.get("/entry/confirm/:system/:confirmation_code", Controller.confirmBooking)
 
