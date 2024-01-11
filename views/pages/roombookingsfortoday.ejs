@@ -35,6 +35,14 @@
             background-color: #AED6F1;
             /* Change this to the desired background color */
         }
+
+        .confirmed {
+            background-color: #fd9595;
+        }
+
+        .tentative {
+            background-color: rgba(249, 243, 58, 0.701961);
+        }
     </style>
 </head>
 
@@ -56,7 +64,7 @@
                 </td>
                 <% if (schedule[hour] && schedule[hour].length> 0) { %>
                     <% if (schedule[hour][0] && schedule[hour][0].rowspan> 0) { %>
-                        <td class="booked" rowspan="<%= schedule[hour][0].rowspan %>">
+                        <td class="booked <%-schedule[hour][0].status==0 ? 'confirmed' : 'tentative' %>" rowspan="<%= schedule[hour][0].rowspan %>">
                             <%= schedule[hour][0].name %>
                         </td>
                     <% } %>

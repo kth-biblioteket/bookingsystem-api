@@ -110,7 +110,7 @@ async function getRoomBookingsForToday(req, res) {
             for (let hour = startHour; hour < endHour; hour++) {
                 if (!userAlreadyAdded) {
                     // Add the user's information only once for the entire booking duration
-                    schedule[hour].push({ name: entry.name, start_time: entry.start_time, end_time: entry.end_time, rowspan });
+                    schedule[hour].push({ name: entry.name, start_time: entry.start_time, end_time: entry.end_time, rowspan, status: entry.status });
                     userAlreadyAdded = true;
                 } else {
                     // If user information is already added, mark the remaining hours as "Booked"
