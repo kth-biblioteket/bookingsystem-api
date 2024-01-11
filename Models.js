@@ -58,6 +58,27 @@ const readRooms = (system, area_id) => {
     })
 };
 
+//Hämta ett rum för area via room_ID, area_ID och system 
+const readRoom = (system, area_id, room_id) => {
+  return new Promise(function (resolve, reject) {
+      const connection = database.createConnection(system);
+      const query = `SELECT * FROM mrbs_room
+                   WHERE area_id = ?
+                   AND id = ?
+                   ORDER BY sort_key`;
+      params = [area_id, room_id]
+      connection.query(query, params, (err, results, fields) => {
+          if (err) {
+            console.error('Error executing query:', err);
+            reject(err.message)
+          }
+          const successMessage = "Success"
+          connection.end();
+          resolve(results);
+        });
+  })
+};
+
 //Hämta bokningsstatus för ett rum via room_ID, timestamo och system 
 const readBookingsForHour = (system, room_id, timestamp) => {
     return new Promise(function (resolve, reject) {
@@ -416,6 +437,7 @@ module.exports = {
     readEntry,
     readArea,
     readRooms,
+    readRoom,
     readBookingsForHour,
     readRoomBookingsForToday,
     readEntryFromConfirmationCode,

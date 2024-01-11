@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Schedule</title>
+    <style>
+        /* Add your CSS styles for the schedule boxes here */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+
+        /* Add a class for the booked slots */
+        .booked {
+            vertical-align: top;
+            background-color: #AED6F1;
+            /* Change this to the desired background color */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Booking Schedule</h1>
+    <table>
+        <tr>
+            <th>Time</th>
+            <th>Bookings</th>
+        </tr>
+        <% for (let hour=8; hour <=20; hour++) { %>
+            <tr>
+                <td>
+                    <%= hour %> - <%= hour + 1 %>
+                </td>
+                <% if (schedule[hour] && schedule[hour].length> 0) { %>
+                    <% if (schedule[hour][0] && schedule[hour][0].rowspan> 0) { %>
+                        <td class="booked" rowspan="<%= schedule[hour][0].rowspan %>">
+                            <%= schedule[hour][0].name %> - <%= schedule[hour][0].start_time %> to <%=
+                                        schedule[hour][0].end_time %>
+                        </td>
+                        <% } %>
+                            <% } else { %>
+                                <td></td>
+                                <% } %>
+            </tr>
+            <% } %>
+    </table>
+</body>
+
+</html>
