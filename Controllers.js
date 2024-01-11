@@ -83,7 +83,9 @@ async function getRoomBookingsForToday(req, res) {
 
         const today = new Date();
         const dayName = today.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
-
+        const todayDay = today.getDate();
+        const todayMonth = today.getMonth() + 1; 
+    
         const morningstarts = roominfo['morningstarts_' + dayName]
 
         const eveningends = roominfo['eveningends_' + dayName]
@@ -117,7 +119,7 @@ async function getRoomBookingsForToday(req, res) {
             }
         });
 
-        res.render('pages/roombookingsfortoday', { roominfo, morningstarts, eveningends, schedule });
+        res.render('pages/roombookingsfortoday', { roominfo, morningstarts, eveningends, schedule, dayName, todayDay, todayMonth });
         } catch (err) {
             res.send("error: " + err)
         }
