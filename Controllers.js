@@ -79,13 +79,19 @@ async function getRoomBookingsForToday(req, res) {
 
         const room = await Model.readRoom(req.params.system, req.params.area_id, req.params.room_id)
 
+        const roominfo = room[0]
+
         const today = new Date();
         const dayName = today.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+
+        const morningstarts = roominfo['morningstarts_' + dayName]
+
+        const eveningends = roominfo['eveningends_' + dayName]
 
         const schedule = {};
 
         // Initialize the schedule with empty slots
-        for (let hour = room[0]['morningstarts_' + dayName]; hour <= room[0]['eveningends_' + dayName]; hour++) {
+        for (let hour = morningstarts; hour <= eveningends; hour++) {
             schedule[hour] = [];
         }
         // Fill in booked slots
@@ -111,7 +117,7 @@ async function getRoomBookingsForToday(req, res) {
             }
         });
 
-        res.render('pages/roombookingsfortoday', { schedule });
+        res.render('pages/roombookingsfortoday', { roominfo, morningstarts, eveningends, schedule });
         } catch (err) {
             res.send("error: " + err)
         }
