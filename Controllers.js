@@ -829,6 +829,7 @@ async function getOpeningHours_json(req, res) {
         let openinghoursarr
         let openingmorehoursarr
         let libraryname;
+        let langcode;
         let weekdatesheader;
         let openinfotext_1;
         let openinfotext_2;
