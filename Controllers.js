@@ -681,6 +681,7 @@ async function getOpeningHours_html_start(req, res) {
         openingmorehoursarr[0] != "" && openingmorehoursarr[0] != null ? ismoreopen = true : ismoreopen = false;
         !ismoreopen && !ismanned ? libaryclosed = true : libaryclosed = false;
         //Dagens första tid
+        //Finns det en tid?
         if (openinghoursarr[0] != "" && openinghoursarr[0] != null) {
             //finns det en meröppettid?
             if (openingmorehoursarr[0] != "" && openingmorehoursarr[0] != null) {
@@ -702,6 +703,7 @@ async function getOpeningHours_html_start(req, res) {
         }
 
         //Dagens sista tid
+        //Finns det en tid?
         if (openinghoursarr[1] != "" && openinghoursarr[1] != null) {
             //finns det en meröppettid?
             if (openingmorehoursarr[1] != "" && openingmorehoursarr[1] != null) {
@@ -826,50 +828,36 @@ async function getOpeningHours_json(req, res) {
         //Gå igenom veckan
         var from = new Date(week_start);
         var to = new Date(week_end);
-        let openinghoursarr
-        let openingmorehoursarr
+        let openinghoursarr = {}
+        let openingmorehoursarr = {}
         let libraryname;
+        let name;
         let langcode;
         let weekdatesheader;
         let openinfotext_1;
         let openinfotext_2;
         let closedtext;
         let unmannedtext;
-        if (req.params.librarycode == process.env.MAIN_LIBRARY_CODE) {
-            if (lang == 'en') {
-                libraryname = "Main Library";
-                weekdatesheader = "Open this week";
-                openinfotext_1 = "* Note! Access with KTH access card mornings 8–9";
-                openinfotext_2 = "";
-                closedtext = "Closed";
-            } else {
-                libraryname = "Huvudbiblioteket";
-                weekdatesheader = "Öppet i veckan";
-                openinfotext_1 = "* Obs! Morgnar 8–9";
-                openinfotext_2 = "krävs KTH passerkort";
-                closedtext = "Stängt";
-            }
-        }
+        let opentodaymoretext_start;
+        let opentodayhours_start;
+        let ismoreopen;
+        let moreopen;
 
-        if (req.params.librarycode == process.env.SODERTALJE_LIBRARY_CODE) {
-            unmannedtext = translations[lang]["unmannedtext"]
-            if (lang == 'en') {
-                langcode = 'en-US';
-                weekdatesheader = "Open this week";
-                libraryname = "Södertälje";
-                openinfotext_1 = "* Unmanned outside regular hours";
-                openinfotext_2 = "";
-                closedtext = "Closed";
-            } else {
-                langcode = 'sv-SE';
-                weekdatesheader = "Öppet i veckan";
-                libraryname = "Södertälje";
-                openinfotext_1 = "* Obemannat utanför ordinarie öppettider";
-                openinfotext_2 = "";
-                closedtext = "Stängt";
-            }
-        }
-
+        //Hämta texter från translations.json
+        unmannedtext = translations[lang]["unmannedtext"]
+        langcode = translations[lang]["room"][req.params.librarycode]["langcode"];
+        weekdatesheader = translations[lang]["room"][req.params.librarycode]["weekdatesheader"];
+        name = translations[lang]["room"][req.params.librarycode]["name"];
+        openinfotext_1 = translations[lang]["room"][req.params.librarycode]["openinfotext_1"];
+        openinfotext_2 = translations[lang]["room"][req.params.librarycode]["openinfotext_2"];
+        closedtext = translations[lang]["room"][req.params.librarycode]["closedtext"];
+        openinfotext_1_startpage = translations[lang]["room"][req.params.librarycode]["openinfotext_1_startpage"];
+        openinfotext_2_startpage = translations[lang]["room"][req.params.librarycode]["openinfotext_2_startpage"];
+        closedtext_startpage = translations[lang]["room"][req.params.librarycode]["closedtext_startpage"];
+        mannedtext_startpage = translations[lang]["room"][req.params.librarycode]["mannedtext_startpage"];
+        unmannedtext_startpage = translations[lang]["room"][req.params.librarycode]["unmannedtext_startpage"];
+       
+        
         //Skapa html som kan hämtas och visas på öppettidersidan i polopoly
         let week_start_date = formatDateForHTMLWeekDays(new Date(week_start))
         let week_end_date = formatDateForHTMLWeekDays(new Date(week_end))
@@ -879,10 +867,15 @@ async function getOpeningHours_json(req, res) {
         let opentodayhours;
         moreopen = false;
         openinghoursarr = await getNonDefaultOpeninghours(req.params.system, todaysdate.toLocaleDateString(), req.params.librarycode, resolution)
-        openingmorehoursarr = await getNonDefaultOpeninghours(req.params.system, todaysdate.toLocaleDateString(), req.params.librarymorecode, resolution)
         openinghoursarr[0] != "" && openinghoursarr[0] != null ? ismanned = true : ismanned = false;
-        openingmorehoursarr[0] != "" && openingmorehoursarr[0] != null ? ismoreopen = true : ismoreopen = false;
+        if(req.params.librarymorecode != 0) {
+            openingmorehoursarr = await getNonDefaultOpeninghours(req.params.system, todaysdate.toLocaleDateString(), req.params.librarymorecode, resolution)
+            openingmorehoursarr[0] != "" && openingmorehoursarr[0] != null ? ismoreopen = true : ismoreopen = false;
+        }
+
+        //Om det inte är meröppet och inte bemannat så är det stängt
         !ismoreopen && !ismanned ? libaryclosed = true : libaryclosed = false;
+
         //Dagens första tid
         if (openinghoursarr[0] != "" && openinghoursarr[0] != null) {
             //finns det en meröppettid?
@@ -924,10 +917,15 @@ async function getOpeningHours_json(req, res) {
                 lasthour = openingmorehoursarr[1];
             }
         }
+
         // Main Library
         if (req.params.librarycode == process.env.MAIN_LIBRARY_CODE) {
             if (!libaryclosed) {
                 if (ismanned) {
+                    opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
+                    if (moreopen) {
+                        opentodaymoretext_start = `${openinfotext_1_startpage} ${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')} ${openinfotext_2_startpage}`
+                    }
                     opentodayhours = `${firsthour.replaceAll('.00', '')}${moreopen ? '*' : ''}–${lasthour.replaceAll('.00', '')}`;
                 }
             } else {
@@ -939,21 +937,50 @@ async function getOpeningHours_json(req, res) {
         if (req.params.librarycode == process.env.SODERTALJE_LIBRARY_CODE) {
             if (!libaryclosed) {
                 if (ismanned) {
+                    opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
+                    opentodaymoretext_start = `${mannedtext_startpage}: ${openinghoursarr[0].replaceAll('.00', '')}–${openinghoursarr[1].replaceAll('.00', '')}${openinfotext_2_startpage}`
                     opentodayhours = `${openinghoursarr[0].replaceAll('.00', '')}–${openinghoursarr[1].replaceAll('.00', '')} (${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')}${moreopen ? '*' : ''})`
                 } else {
-                    opentodayhours = `${unmannedtext} (${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')}${moreopen ? '*' : ''})`
+                    opentodayhours_start = `${unmannedtext_startpage} (${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')}${moreopen ? '*' : ''})`
+                    opentodaymoretext_start = `${mannedtext_startpage}: ${openinghoursarr[0].replaceAll('.00', '')}–${openinghoursarr[1].replaceAll('.00', '')}${openinfotext_2_startpage}`
+                    opentodayhours = `${unmannedtext}`
                 }
             } else {
                 opentodayhours = closedtext
             }
         }
 
+        //Chat
+        if (req.params.librarycode == process.env.CHAT_CODE) {
+            if (!libaryclosed) {
+                opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
+                opentodaymoretext_start = ``
+                opentodayhours = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`;
+            } else {
+                opentodayhours = closedtext
+            }
+        }
+
+        //Phone
+        if (req.params.librarycode == process.env.PHONE_CODE) {
+            if (!libaryclosed) {
+                opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
+                opentodaymoretext_start = ``
+                opentodayhours = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`;
+            } else {
+                opentodayhours = closedtext
+            }
+        }
+
         json = `{
-        "libraryname" : "${libraryname}",
-        "weekdatesheader" : "${weekdatesheader}",
-        "week" : "${week_start_date}–${week_end_date}",
+        "name" : "${name}",
+        "todaysdate" : "${todaysdate.toLocaleDateString(langcode,{})}",
+        "opentodaymoretext_startpage" : "${opentodaymoretext_start}",
+        "opentodayhours_startpage" : "${opentodayhours_start}",
         "opentodaytext" : "Öppet idag ${todaysdate.toLocaleDateString(langcode,{weekday: 'long',month: 'long',day: 'numeric'})}",
         "opentodayhours" : "${opentodayhours}",
+        "weekdatesheader" : "${weekdatesheader}",
+        "week" : "${week_start_date}–${week_end_date}",
         "days" : [`
 
         //Öppettider för veckan för givet datum
@@ -968,11 +995,14 @@ async function getOpeningHours_json(req, res) {
             dayindex++
             moreopen = false;
             openinghoursarr = await getNonDefaultOpeninghours(req.params.system, day.toLocaleDateString(), req.params.librarycode, resolution)
-            openingmorehoursarr = await getNonDefaultOpeninghours(req.params.system, day.toLocaleDateString(), req.params.librarymorecode, resolution)
             openinghoursarr[0] != "" && openinghoursarr[0] != null ? ismanned = true : ismanned = false;
-            openingmorehoursarr[0] != "" && openingmorehoursarr[0] != null ? ismoreopen = true : ismoreopen = false;
+            if(req.params.librarymorecode != 0) {
+                openingmorehoursarr = await getNonDefaultOpeninghours(req.params.system, day.toLocaleDateString(), req.params.librarymorecode, resolution)
+                openingmorehoursarr[0] != "" && openingmorehoursarr[0] != null ? ismoreopen = true : ismoreopen = false;
+            }
             !ismoreopen && !ismanned ? libaryclosed = true : libaryclosed = false;
             //Dagens första tid
+            //Finns det en tid?
             if (openinghoursarr[0] != "" && openinghoursarr[0] != null) {
                 //finns det en meröppettid?
                 if (openingmorehoursarr[0] != "" && openingmorehoursarr[0] != null) {
@@ -994,6 +1024,7 @@ async function getOpeningHours_json(req, res) {
             }
 
             //Dagens sista tid
+            //Finns det en tid?
             if (openinghoursarr[1] != "" && openinghoursarr[1] != null) {
                 //finns det en meröppettid?
                 if (openingmorehoursarr[1] != "" && openingmorehoursarr[1] != null) {
@@ -1021,15 +1052,13 @@ async function getOpeningHours_json(req, res) {
                         json += `
                         "date" : "${day.toLocaleDateString(req.params.lang)}",
                         "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
-                        "hours" : "${firsthour.replaceAll('.00', '')}${moreopen ? '*' : ''}–${lasthour.replaceAll('.00', '')}"
-                    }`
+                        "hours" : "${firsthour.replaceAll('.00', '')}${moreopen ? '*' : ''}–${lasthour.replaceAll('.00', '')}"`
                     }
                 } else {
                     json += `
                     "date" : "${day.toLocaleDateString(req.params.lang)}",
                     "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
-                    "hours" : "${closedtext}"
-                }`
+                    "hours" : "${closedtext}"`
                 }
             }
 
@@ -1040,23 +1069,38 @@ async function getOpeningHours_json(req, res) {
                         json += `
                         "date" : "${day.toLocaleDateString(req.params.lang)}",
                         "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
-                        "hours" : "${openinghoursarr[0].replaceAll('.00', '')}–${openinghoursarr[1].replaceAll('.00', '')} (${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')}${moreopen ? '*' : ''})"
-                    }`
+                        "hours" : "${openinghoursarr[0].replaceAll('.00', '')}–${openinghoursarr[1].replaceAll('.00', '')} (${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')}${moreopen ? '*' : ''})"`
                     } else {
                         json += `
                         "date" : "${day.toLocaleDateString(req.params.lang)}",
                         "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
-                        "hours" : "${unmannedtext} (${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')}${moreopen ? '*' : ''})"
-                    }`
+                        "hours" : "${unmannedtext} (${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')}${moreopen ? '*' : ''})"`
                     }
                 } else {
                     json += `
                     "date" : "${day.toLocaleDateString(req.params.lang)}",
                     "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
-                    "hours" : "${closedtext}"
-                }`
+                    "hours" : "${closedtext}"`
                 }
             }
+
+            // Chat
+            if (req.params.librarycode == process.env.CHAT_CODE) {
+                json += `
+                "date" : "${day.toLocaleDateString(req.params.lang)}",
+                "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
+                "hours" : "${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}"`
+            }
+
+            // Phone
+            if (req.params.librarycode == process.env.PHONE_CODE) {
+                json += `
+                "date" : "${day.toLocaleDateString(req.params.lang)}",
+                "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
+                "hours" : "${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}"`
+            }
+
+            json += `}`
 
         } // Slut loop days
         json += `
@@ -1073,8 +1117,7 @@ async function getOpeningHours_json(req, res) {
         json += `
         "moretext" : "${openinfotext_1} ${openinfotext_2}",
         "prevdate" : "${prevdate}",
-        "nextdate" : "${nextdate}"
-    }`
+        "nextdate" : "${nextdate}"}`
 
         res.send(JSON.parse(json))
     } catch (err) {

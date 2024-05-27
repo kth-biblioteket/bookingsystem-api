@@ -35,6 +35,59 @@
             "Thursday", 
             "Friday", 
             "Saturday"
+        ],
+        "langcode" : "en-US",
+        "room" : [
+            {
+                "1" : {
+                    "name" : "Main library",
+                    "openinfotext_1" : "* Note! Access with KTH access card mornings 8–9",
+                    "openinfotext_2" : "",
+                    "closedtext" : "Closed",
+                    "weekdatesheader": "Open this week",
+                    "mannedtext_startpage" : "",
+                    "unmannedtext_startpage" : "",
+                    "openinfotext_1_startpage" : "Note! Access with KTH access card mornings",
+                    "openinfotext_2_startpage" : "",
+                    "closedtext_startpage" : "Closed"
+                },
+                "2" : {
+                    "name" : "Södertälje",
+                    "openinfotext_1" : "* Unmanned outside regular hours",
+                    "openinfotext_2" : "",
+                    "closedtext" : "Closed",
+                    "weekdatesheader": "Open this week",
+                    "mannedtext_startpage" : "Note! Manned",
+                    "unmannedtext_startpage" : "Note! Unmanned",
+                    "openinfotext_1_startpage" : "",
+                    "openinfotext_2_startpage" : "",
+                    "closedtext_startpage" : "Closed"
+                },
+                "7" : {
+                    "name" : "Chat",
+                    "openinfotext_1" : "",
+                    "openinfotext_2" : "",
+                    "closedtext" : "Closed",
+                    "weekdatesheader": "Open this week",
+                    "mannedtext_startpage" : "",
+                    "unmannedtext_startpage" : "",
+                    "openinfotext_1_startpage" : "",
+                    "openinfotext_2_startpage" : "",
+                    "closedtext_startpage" : "Closed"
+                },
+                "8" : {
+                    "name" : "Phone",
+                    "openinfotext_1" : "",
+                    "openinfotext_2" : "",
+                    "closedtext" : "Closed",
+                    "weekdatesheader": "Open this week",
+                    "mannedtext_startpage" : "",
+                    "unmannedtext_startpage" : "",
+                    "openinfotext_1_startpage" : "",
+                    "openinfotext_2_startpage" : "",
+                    "closedtext_startpage" : "Closed"
+                }
+            }
         ]
     },
     "sv": {
@@ -72,6 +125,57 @@
             "Torsdag", 
             "Fredag", 
             "Lördag"
-        ]
+        ],
+        "langcode" : "sv-SE",
+        "room" : {
+            "1" : {
+                "name" : "Huvudbiblioteket",
+                "openinfotext_1" : "* Obs! Morgnar 8–9",
+                "openinfotext_2" : "krävs KTH passerkort",
+                "closedtext" : "Stängt",
+                "weekdatesheader": "Öppet i veckan",
+                "mannedtext_startpage" : "",
+                "unmannedtext_startpage" : "",
+                "openinfotext_1_startpage" : "Obs! Morgnar",
+                "openinfotext_2_startpage" : "krävs KTH passerkort",
+                "closedtext_startpage" : "Stängt"
+            },
+            "5" : {
+                "name" : "Södertälje",
+                "openinfotext_1" : "* Obemannat utanför ordinarie öppettider",
+                "openinfotext_2" : "",
+                "closedtext" : "Stängt",
+                "weekdatesheader": "Öppet i veckan",
+                "mannedtext_startpage" : "Obs! Bemannat",
+                "unmannedtext_startpage" : "Obs! Obemannat",
+                "openinfotext_1_startpage" : "",
+                "openinfotext_2_startpage" : "",
+                "closedtext_startpage" : "Stängt"
+            },
+            "7" : {
+                "name" : "Chatt",
+                "openinfotext_1" : "",
+                "openinfotext_2" : "",
+                "closedtext" : "Stängt",
+                "weekdatesheader": "Öppet i veckan",
+                "mannedtext_startpage" : "",
+                "unmannedtext_startpage" : "",
+                "openinfotext_1_startpage" : "",
+                "openinfotext_2_startpage" : "",
+                "closedtext_startpage" : "Stängt"
+            },
+            "8" : {
+                "name" : "Telefon",
+                "openinfotext_1" : "",
+                "openinfotext_2" : "",
+                "closedtext" : "Stängt",
+                "weekdatesheader": "Öppet i veckan",
+                "mannedtext_startpage" : "",
+                "unmannedtext_startpage" : "",
+                "openinfotext_1_startpage" : "",
+                "openinfotext_2_startpage" : "",
+                "closedtext_startpage" : "Stängt"
+            }
+        }
     }
   }
