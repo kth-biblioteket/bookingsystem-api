@@ -984,7 +984,7 @@ async function getOpeningHours_json(req, res) {
         json = `{
         "name" : "${name}",
         "todaysdate" : "${todaysdate.toLocaleDateString(langcode,{})}",
-        "opentoday" : "${opentoday}",
+        "opentoday" : ${opentoday},
         "opentodaymoretext_startpage" : "${opentodaymoretext_start}",
         "opentodayhours_startpage" : "${opentodayhours_start}",
         "opentodaytext" : "Öppet idag ${todaysdate.toLocaleDateString(langcode,{weekday: 'long',month: 'long',day: 'numeric'})}",
