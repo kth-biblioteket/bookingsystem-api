@@ -929,6 +929,7 @@ async function getOpeningHours_json(req, res) {
                     opentodayhours = `${firsthour.replaceAll('.00', '')}${moreopen ? '*' : ''}–${lasthour.replaceAll('.00', '')}`;
                 }
             } else {
+                opentodayhours_start = closedtext
                 opentodayhours = closedtext
             }
         }
@@ -946,6 +947,7 @@ async function getOpeningHours_json(req, res) {
                     opentodayhours = `${unmannedtext}`
                 }
             } else {
+                opentodayhours_start = closedtext
                 opentodayhours = closedtext
             }
         }
@@ -957,6 +959,7 @@ async function getOpeningHours_json(req, res) {
                 opentodaymoretext_start = ``
                 opentodayhours = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`;
             } else {
+                opentodayhours_start = closedtext
                 opentodayhours = closedtext
             }
         }
@@ -968,6 +971,7 @@ async function getOpeningHours_json(req, res) {
                 opentodaymoretext_start = ``
                 opentodayhours = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`;
             } else {
+                opentodayhours_start = closedtext
                 opentodayhours = closedtext
             }
         }
