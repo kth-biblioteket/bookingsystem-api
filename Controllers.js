@@ -865,6 +865,7 @@ async function getOpeningHours_json(req, res) {
         //Dagens öppettider
         let todaysdate = new Date();
         let opentodayhours;
+        let opentoday = true;
         moreopen = false;
         openinghoursarr = await getNonDefaultOpeninghours(req.params.system, todaysdate.toLocaleDateString(), req.params.librarycode, resolution)
         openinghoursarr[0] != "" && openinghoursarr[0] != null ? ismanned = true : ismanned = false;
@@ -931,6 +932,7 @@ async function getOpeningHours_json(req, res) {
             } else {
                 opentodayhours_start = closedtext
                 opentodayhours = closedtext
+                opentoday = false
             }
         }
 
@@ -949,6 +951,7 @@ async function getOpeningHours_json(req, res) {
             } else {
                 opentodayhours_start = closedtext
                 opentodayhours = closedtext
+                opentoday = false
             }
         }
 
@@ -961,6 +964,7 @@ async function getOpeningHours_json(req, res) {
             } else {
                 opentodayhours_start = closedtext
                 opentodayhours = closedtext
+                opentoday = false
             }
         }
 
@@ -973,12 +977,14 @@ async function getOpeningHours_json(req, res) {
             } else {
                 opentodayhours_start = closedtext
                 opentodayhours = closedtext
+                opentoday = false
             }
         }
 
         json = `{
         "name" : "${name}",
         "todaysdate" : "${todaysdate.toLocaleDateString(langcode,{})}",
+        "opentoday" : "${opentoday}",
         "opentodaymoretext_startpage" : "${opentodaymoretext_start}",
         "opentodayhours_startpage" : "${opentodayhours_start}",
         "opentodaytext" : "Öppet idag ${todaysdate.toLocaleDateString(langcode,{weekday: 'long',month: 'long',day: 'numeric'})}",
