@@ -845,7 +845,7 @@ async function getOpeningHours_json(req, res) {
 
         //Hämta texter från translations.json
         unmannedtext = translations[lang]["unmannedtext"]
-        langcode = translations[lang]["room"][req.params.librarycode]["langcode"];
+        langcode = translations[lang]["langcode"];
         weekdatesheader = translations[lang]["room"][req.params.librarycode]["weekdatesheader"];
         name = translations[lang]["room"][req.params.librarycode]["name"];
         openinfotext_1 = translations[lang]["room"][req.params.librarycode]["openinfotext_1"];
