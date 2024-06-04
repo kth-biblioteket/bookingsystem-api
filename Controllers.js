@@ -863,7 +863,7 @@ async function getOpeningHours_json(req, res) {
         let week_end_date = formatDateForHTMLWeekDays(new Date(week_end))
 
         //Dagens öppettider
-        let todaysdate = new Date();
+        let todaysdate = givenDate // new Date();
         let opentodayhours;
         let opentoday = true;
         moreopen = false;
@@ -944,12 +944,13 @@ async function getOpeningHours_json(req, res) {
                     opentodaymoretext_start = `${mannedtext_startpage}: ${openinghoursarr[0].replaceAll('.00', '')}–${openinghoursarr[1].replaceAll('.00', '')}${openinfotext_2_startpage}`
                     opentodayhours = `${openinghoursarr[0].replaceAll('.00', '')}–${openinghoursarr[1].replaceAll('.00', '')} (${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')}${moreopen ? '*' : ''})`
                 } else {
-                    opentodayhours_start = `${unmannedtext_startpage}`
-                    opentodaymoretext_start = `${mannedtext_startpage}: ${openinfotext_2_startpage}`
-                    opentodayhours = `${unmannedtext}`
+                    opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
+                    opentodaymoretext_start = `${unmannedtext_startpage} ${openinfotext_2_startpage}`
+                    opentodayhours = `${unmannedtext} (${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')}${moreopen ? '*' : ''})`
                 }
             } else {
                 opentodayhours_start = closedtext
+                opentodaymoretext_start = ""
                 opentodayhours = closedtext
                 opentoday = false
             }
@@ -1206,10 +1207,11 @@ function formatDate(date) {
 }
 
 function getFirstDayOfWeek(date) {
-    const day = date.getDay();
-    const diff = (day + 6) % 7;
-    date.setDate(date.getDate() - diff);
-    return formatDate(date);
+    const dateCopy = new Date(date); // Create a copy of the date
+    const day = dateCopy.getDay();
+    const diff = (day + 6) % 7; // Assuming Monday as the first day of the week
+    dateCopy.setDate(dateCopy.getDate() - diff);
+    return formatDate(dateCopy);
 }
 
 function getLastDayOfWeek(date) {
