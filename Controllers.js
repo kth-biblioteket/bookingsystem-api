@@ -866,6 +866,7 @@ async function getOpeningHours_json(req, res) {
         let todaysdate = new Date();
         let opentodayhours;
         let opentoday = true;
+        let ismanned;
         moreopen = false;
         openinghoursarr = await getNonDefaultOpeninghours(req.params.system, todaysdate.toLocaleDateString(), req.params.librarycode, resolution)
         openinghoursarr[0] != "" && openinghoursarr[0] != null ? ismanned = true : ismanned = false;
