@@ -989,7 +989,7 @@ async function getOpeningHours_json(req, res) {
         "opentoday" : ${opentoday},
         "opentodaymoretext_startpage" : "${opentodaymoretext_start}",
         "opentodayhours_startpage" : "${opentodayhours_start}",
-        "opentodaytext" : "${opentoday ? "Öppet idag " : "Stängt idag " + todaysdate.toLocaleDateString(langcode,{weekday: 'long',month: 'long',day: 'numeric'})}",
+        "opentodaytext" : "${(opentoday ? "Öppet idag " : "Stängt idag ") + todaysdate.toLocaleDateString(langcode,{weekday: 'long',month: 'long',day: 'numeric'})}",
         "opentodayhours" : "${opentodayhours}",
         "weekdatesheader" : "${weekdatesheader}",
         "week" : "${week_start_date}–${week_end_date}",
