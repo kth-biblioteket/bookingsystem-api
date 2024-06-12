@@ -837,6 +837,11 @@ async function getOpeningHours_json(req, res) {
         let openinfotext_1;
         let openinfotext_2;
         let closedtext;
+        let openinfotext_1_startpage;
+        let openinfotext_2_startpage;
+        let closedtext_startpage;
+        let mannedtext_startpage;
+        let unmannedtext_startpage;
         let unmannedtext;
         let opentodaymoretext_start;
         let opentodayhours_start;
