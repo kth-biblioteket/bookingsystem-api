@@ -840,6 +840,7 @@ async function getOpeningHours_json(req, res) {
         let openinfotext_1_startpage;
         let openinfotext_2_startpage;
         let closedtext_startpage;
+        let mannedtext;
         let mannedtext_startpage;
         let unmannedtext_startpage;
         let unmannedtext;
@@ -859,6 +860,7 @@ async function getOpeningHours_json(req, res) {
         openinfotext_1_startpage = translations[lang]["room"][req.params.librarycode]["openinfotext_1_startpage"];
         openinfotext_2_startpage = translations[lang]["room"][req.params.librarycode]["openinfotext_2_startpage"];
         closedtext_startpage = translations[lang]["room"][req.params.librarycode]["closedtext_startpage"];
+        mannedtext = translations[lang]["room"][req.params.librarycode]["mannedtext"];
         mannedtext_startpage = translations[lang]["room"][req.params.librarycode]["mannedtext_startpage"];
         unmannedtext_startpage = translations[lang]["room"][req.params.librarycode]["unmannedtext_startpage"];
        
@@ -1090,12 +1092,12 @@ async function getOpeningHours_json(req, res) {
                         json += `
                         "date" : "${day.toLocaleDateString(req.params.lang)}",
                         "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
-                        "hours" : "${openinghoursarr[0].replaceAll('.00', '')}–${openinghoursarr[1].replaceAll('.00', '')} (${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')}${moreopen ? '*' : ''})"`
+                        "hours" : "${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')} (${mannedtext} ${openinghoursarr[0].replaceAll('.00', '')}–${openinghoursarr[1].replaceAll('.00', '')})"`
                     } else {
                         json += `
                         "date" : "${day.toLocaleDateString(req.params.lang)}",
                         "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
-                        "hours" : "${unmannedtext} (${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')}${moreopen ? '*' : ''})"`
+                        "hours" : "${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')}${moreopen ? '*' : ''} (${unmannedtext})"`
                     }
                 } else {
                     json += `
