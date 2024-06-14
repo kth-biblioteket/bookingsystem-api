@@ -932,10 +932,13 @@ async function getOpeningHours_json(req, res) {
                     opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
                     if (moreopen) {
                         opentodaymoretext_start = `${openinfotext_1_startpage} ${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')} ${openinfotext_2_startpage}`
+                    } else {
+                        opentodaymoretext_start = ""
                     }
                     opentodayhours = `${firsthour.replaceAll('.00', '')}${moreopen ? '*' : ''}–${lasthour.replaceAll('.00', '')}`;
                 }
             } else {
+                opentodaymoretext_start = ""
                 opentodayhours_start = closedtext
                 opentodayhours = closedtext
                 opentoday = false
@@ -948,11 +951,11 @@ async function getOpeningHours_json(req, res) {
                 if (ismanned) {
                     opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
                     opentodaymoretext_start = `${mannedtext_startpage} ${openinghoursarr[0].replaceAll('.00', '')}–${openinghoursarr[1].replaceAll('.00', '')}${openinfotext_2_startpage}`
-                    opentodayhours = `${openinghoursarr[0].replaceAll('.00', '')}–${openinghoursarr[1].replaceAll('.00', '')} (${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')}${moreopen ? '*' : ''})`
+                    opentodayhours = `${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')} (${openinghoursarr[0].replaceAll('.00', '')}–${openinghoursarr[1].replaceAll('.00', '')})`
                 } else {
                     opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
                     opentodaymoretext_start = `${unmannedtext_startpage} ${openinfotext_2_startpage}`
-                    opentodayhours = `${unmannedtext} (${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')}${moreopen ? '*' : ''})`
+                    opentodayhours = `${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')} (${unmannedtext} )`
                 }
             } else {
                 opentodayhours_start = closedtext
@@ -991,6 +994,7 @@ async function getOpeningHours_json(req, res) {
         json = `{
         "name" : "${name}",
         "todaysdate" : "${todaysdate.toLocaleDateString(langcode,{})}",
+        "ismanned" : ${ismanned},
         "opentoday" : ${opentoday},
         "opentodaymoretext_startpage" : "${opentodaymoretext_start}",
         "opentodayhours_startpage" : "${opentodayhours_start}",
