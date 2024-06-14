@@ -957,7 +957,7 @@ async function getOpeningHours_json(req, res) {
                 } else {
                     opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
                     opentodaymoretext_start = `${unmannedtext_startpage} ${openinfotext_2_startpage}`
-                    opentodayhours = `${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')} (${unmannedtext} )`
+                    opentodayhours = `${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')} (${unmannedtext})`
                 }
             } else {
                 opentodayhours_start = closedtext
