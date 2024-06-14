@@ -57,7 +57,7 @@
                     "closedtext" : "Closed",
                     "weekdatesheader": "Open this week",
                     "mannedtext_startpage" : "The library is manned",
-                    "unmannedtext_startpage" : "Unmanned",
+                    "unmannedtext_startpage" : "The library is open but unmanned",
                     "openinfotext_1_startpage" : "",
                     "openinfotext_2_startpage" : "",
                     "closedtext_startpage" : "Closed"
@@ -145,7 +145,7 @@
                 "closedtext" : "Stängt",
                 "weekdatesheader": "Öppet i veckan",
                 "mannedtext_startpage" : "Biblioteket är bemannat",
-                "unmannedtext_startpage" : "Obemannat",
+                "unmannedtext_startpage" : "Biblioteket är öppet men obemannat",
                 "openinfotext_1_startpage" : "",
                 "openinfotext_2_startpage" : "",
                 "closedtext_startpage" : "Stängt"
