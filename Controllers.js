@@ -966,7 +966,7 @@ async function getOpeningHours_json(req, res) {
         if (req.params.librarycode == process.env.CHAT_CODE) {
             if (!libaryclosed) {
                 opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
-                opentodaymoretext_start = ``
+                opentodaymoretext_start = ""
                 opentodayhours = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`;
             } else {
                 opentodayhours_start = closedtext
@@ -979,7 +979,7 @@ async function getOpeningHours_json(req, res) {
         if (req.params.librarycode == process.env.PHONE_CODE) {
             if (!libaryclosed) {
                 opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
-                opentodaymoretext_start = ``
+                opentodaymoretext_start = ""
                 opentodayhours = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`;
             } else {
                 opentodayhours_start = closedtext
