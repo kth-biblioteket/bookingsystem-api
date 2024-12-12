@@ -39,6 +39,11 @@ apiRoutes.get("/roomsavailability/:system/:area_id/:timestamp", Controller.getRo
 
 apiRoutes.get("/roombookingsfortoday/:system/:area_id/:room_number", Controller.getRoomBookingsForToday)
 
+/**
+ * Validera bokning
+ */
+apiRoutes.post("/entry/validate/:system/:user_id/:room_id", Controller.validateBooking)
+
 apiRoutes.get("/entry/confirm/:system/:confirmation_code", Controller.confirmBooking)
 
 apiRoutes.get("/reminderbookings/:system/:fromtime/:totime/:status/:type", Controller.getReminderBookings)

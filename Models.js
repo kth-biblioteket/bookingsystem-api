@@ -19,6 +19,45 @@ const readEntry = (system, id) => {
     })
 };
 
+//Hämta bokning via user, room och system 
+const readEntryByUserAndRoom = (system, user_id, room_id) => {
+  return new Promise(function (resolve, reject) {
+      const connection = database.createConnection(system);
+      const query = `SELECT * FROM mrbs_entry
+                   WHERE create_by = ? AND room_id = ?`;
+      params = [user_id, room_id]
+      connection.query(query, params, (err, results, fields) => {
+          if (err) {
+            console.error('Error executing query:', err);
+            reject(err.message)
+          }
+          const successMessage = "Success"
+          connection.end();
+          resolve(results);
+        });
+  })
+};
+
+//Hämta bokning via room och system 
+const readEntryByRoomAndCurrentTime = (system, room_id) => {
+  return new Promise(function (resolve, reject) {
+      const connection = database.createConnection(system);
+      let currenttimestamp = Math.floor(Date.now() / 1000);
+      const query = `SELECT * FROM mrbs_entry
+                   WHERE FROM_UNIXTIME(start_time) <= now() and FROM_UNIXTIME(end_time) >= now() AND room_id = ?`;
+      params = [room_id]
+      connection.query(query, params, (err, results, fields) => {
+          if (err) {
+            console.error('Error executing query:', err);
+            reject(err.message)
+          }
+          const successMessage = "Success"
+          connection.end();
+          resolve(results);
+        });
+  })
+};
+
 //Hämta area via ID och system 
 const readArea = (system, id) => {
     return new Promise(function (resolve, reject) {
@@ -456,6 +495,8 @@ const checkifslotisfree = (system, datetocheck, librarycode, slotinseconds) => {
 
 module.exports = {
     readEntry,
+    readEntryByUserAndRoom,
+    readEntryByRoomAndCurrentTime,
     readArea,
     readRooms,
     readRoom,

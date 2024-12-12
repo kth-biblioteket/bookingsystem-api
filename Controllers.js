@@ -126,6 +126,29 @@ async function getRoomBookingsForToday(req, res) {
     }
 }
 
+/**
+ * Valdiera en bokning utifrån rum_id och system id
+ * @param {*} req 
+ * @param {*} res 
+ */
+async function validateBooking(req, res) {
+
+    try {
+        let entry = await Model.readEntryByRoomAndCurrentTime(req.params.system, req.params.room_id)
+        console.log(entry)
+        if (entry.length > 0 && entry[0].create_by == req.params.user_id) {
+            res.status(200).json({ valid: true, reservation: entry[0] }); 
+        } else {
+            //Hittar ingen bokning
+            res.status(200).json({ valid: false });
+        }
+    }
+    catch (err) {
+        res.status(200).json({ valid: false });
+        console.log(err);
+    }
+}
+
 /*
 Funktion som kvitterar en preliminär bokning utifrån den token som satts på bokningen
 preliminär: status = 4
@@ -1247,6 +1270,7 @@ module.exports = {
     readEntry,
     getRoomsAvailability,
     getRoomBookingsForToday,
+    validateBooking,
     confirmBooking,
     getReminderBookings,
     updateEntryConfirmationCode,
