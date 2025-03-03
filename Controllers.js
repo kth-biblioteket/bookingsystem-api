@@ -971,7 +971,7 @@ async function getOpeningHours_json(req, res) {
             }
         }
 
-        libraryclosed = Model.readClosedPeriod(todaysdate.toLocaleDateString("sv-SE"))
+        libraryclosed = Model.readClosedPeriod(system, req.params.librarycode, todaysdate.toLocaleDateString("sv-SE"))
 
         // Main Library
         if (req.params.librarycode == process.env.MAIN_LIBRARY_CODE) {
