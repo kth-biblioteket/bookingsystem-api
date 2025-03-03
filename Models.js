@@ -493,6 +493,40 @@ const checkifslotisfree = (system, datetocheck, librarycode, slotinseconds) => {
   })
 };
 
+//Kolla om aktuell dag är stängd via stängda perioder för arean
+const readClosedPeriod = async (system, area_id, date_to_check) => {
+  try {
+    const connection = database.createConnection(system);
+    const query = `
+      SELECT * 
+      FROM mrbs_kth_closed_periods
+      WHERE 
+      from_date <= ? AND to_date >= ? 
+      AND area_id = ?`;
+
+    const params = [parsed_date, date_to_check, area_id];
+
+    return new Promise((resolve, reject) => {
+      connection.query(query, params, (err, results) => {
+        connection.end();
+        if (err) {
+          console.error('Database Error:', err);
+          return reject(err.message);
+        }
+        if (results.length > 0) {
+          //Dagen är stängd
+          return resolve(true);
+        }
+  
+        resolve(false);
+      });
+    });
+  } catch (error) {
+    console.error('Parsing Error:', error);
+    throw error;
+  }
+};
+
 module.exports = {
     readEntry,
     readEntryByUserAndRoom,
@@ -513,5 +547,6 @@ module.exports = {
     readRoomStartEndDay,
     readRoomClosedDays,
     readResolution,
+    readClosedPeriod,
     checkifslotisfree
 };
