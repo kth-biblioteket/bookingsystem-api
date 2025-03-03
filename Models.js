@@ -504,7 +504,7 @@ const readClosedPeriod = async (system, area_id, date_to_check) => {
       from_date <= ? AND to_date >= ? 
       AND area_id = ?`;
 
-    const params = [parsed_date, date_to_check, area_id];
+    const params = [date_to_check, date_to_check, area_id];
 
     return new Promise((resolve, reject) => {
       connection.query(query, params, (err, results) => {
