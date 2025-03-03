@@ -1071,7 +1071,7 @@ async function getOpeningHours_json(req, res) {
             }
             !ismoreopen && !ismanned ? libraryclosed = true : libraryclosed = false;
 
-            libraryclosed = await Model.readClosedPeriod(req.params.system, req.params.librarycode, todaysdate.toLocaleDateString("sv-SE"))
+            libraryclosed = await Model.readClosedPeriod(req.params.system, req.params.librarycode, day.toLocaleDateString("sv-SE"))
 
             //Dagens första tid
             //Finns det en tid?
