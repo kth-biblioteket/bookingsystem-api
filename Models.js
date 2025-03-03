@@ -504,8 +504,6 @@ const readClosedPeriod = async (system, area_id, date_to_check) => {
       from_date <= ? AND to_date >= ? 
       AND area_id = ?`;
 
-      console.log(date_to_check)
-
     const params = [date_to_check, date_to_check, area_id];
 
     return new Promise((resolve, reject) => {
@@ -515,7 +513,6 @@ const readClosedPeriod = async (system, area_id, date_to_check) => {
           console.error('Database Error:', err);
           return reject(err.message);
         }
-        console.log(results)
         if (results.length > 0) {
           //Dagen är stängd
           return resolve(true);
