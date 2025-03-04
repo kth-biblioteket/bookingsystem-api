@@ -1167,18 +1167,32 @@ async function getOpeningHours_json(req, res) {
 
             // Chat
             if (req.params.librarycode == process.env.CHAT_CODE) {
-                json += `
-                "date" : "${day.toLocaleDateString(req.params.lang)}",
-                "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
-                "hours" : "${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}"`
+                if (!libraryclosed) {
+                    json += `
+                    "date" : "${day.toLocaleDateString(req.params.lang)}",
+                    "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
+                    "hours" : "${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}"`
+                } else {
+                    json += `
+                    "date" : "${day.toLocaleDateString(req.params.lang)}",
+                    "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
+                    "hours" : "${closedtext}"`
+                }
             }
 
             // Phone
             if (req.params.librarycode == process.env.PHONE_CODE) {
-                json += `
-                "date" : "${day.toLocaleDateString(req.params.lang)}",
-                "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
-                "hours" : "${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}"`
+                if (!libraryclosed) {
+                    json += `
+                    "date" : "${day.toLocaleDateString(req.params.lang)}",
+                    "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
+                    "hours" : "${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}"`
+                } else {
+                    json += `
+                    "date" : "${day.toLocaleDateString(req.params.lang)}",
+                    "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
+                    "hours" : "${closedtext}"`
+                }
             }
 
             json += `}`
