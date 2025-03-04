@@ -861,6 +861,7 @@ async function getOpeningHours_json(req, res) {
     nextdate = nd.toLocaleDateString("sv-SE")
 
     try {
+        let resolution;
         //hämta resolution för area(id = 1)
         let resolution_res = await Model.readResolution(req.params.system, 1);
         if (resolution_res.length > 0) {
@@ -892,6 +893,7 @@ async function getOpeningHours_json(req, res) {
         let opentodayhours_start;
         let ismoreopen;
         let moreopen;
+        let libraryclosed;
 
         //Hämta texter från translations.json
         unmannedtext = translations[lang]["unmannedtext"]
@@ -918,6 +920,8 @@ async function getOpeningHours_json(req, res) {
         let opentodayhours;
         let opentoday = true;
         let ismanned;
+        let firsthour;
+        let lasthour;
         moreopen = false;
         openinghoursarr = await getNonDefaultOpeninghours(req.params.system, todaysdate.toLocaleDateString(), req.params.librarycode, resolution)
         openinghoursarr[0] != "" && openinghoursarr[0] != null ? ismanned = true : ismanned = false;
@@ -927,7 +931,7 @@ async function getOpeningHours_json(req, res) {
         }
 
         //Om det inte är meröppet och inte bemannat så är det stängt
-        !ismoreopen && !ismanned ? libaryclosed = true : libaryclosed = false;
+        !ismoreopen && !ismanned ? libraryclosed = true : libraryclosed = false;
 
         //Dagens första tid
         if (openinghoursarr[0] != "" && openinghoursarr[0] != null) {
@@ -971,9 +975,14 @@ async function getOpeningHours_json(req, res) {
             }
         }
 
+        // Kolla om det eventuellt finns stängd period för arean = 1
+        if(!libraryclosed) {
+            libraryclosed = await Model.readClosedPeriod(req.params.system, 1, todaysdate.toLocaleDateString("sv-SE"))
+        }
+
         // Main Library
         if (req.params.librarycode == process.env.MAIN_LIBRARY_CODE) {
-            if (!libaryclosed) {
+            if (!libraryclosed) {
                 if (ismanned) {
                     opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
                     if (moreopen) {
@@ -993,7 +1002,7 @@ async function getOpeningHours_json(req, res) {
 
         // Södertälje
         if (req.params.librarycode == process.env.SODERTALJE_LIBRARY_CODE) {
-            if (!libaryclosed) {
+            if (!libraryclosed) {
                 if (ismanned) {
                     opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
                     opentodaymoretext_start = `${mannedtext_startpage} ${openinghoursarr[0].replaceAll('.00', '')}–${openinghoursarr[1].replaceAll('.00', '')}${openinfotext_2_startpage}`
@@ -1013,7 +1022,7 @@ async function getOpeningHours_json(req, res) {
 
         //Chat
         if (req.params.librarycode == process.env.CHAT_CODE) {
-            if (!libaryclosed) {
+            if (!libraryclosed) {
                 opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
                 opentodaymoretext_start = ""
                 opentodayhours = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`;
@@ -1026,7 +1035,7 @@ async function getOpeningHours_json(req, res) {
 
         //Phone
         if (req.params.librarycode == process.env.PHONE_CODE) {
-            if (!libaryclosed) {
+            if (!libraryclosed) {
                 opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
                 opentodaymoretext_start = ""
                 opentodayhours = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`;
@@ -1067,7 +1076,8 @@ async function getOpeningHours_json(req, res) {
                 openingmorehoursarr = await getNonDefaultOpeninghours(req.params.system, day.toLocaleDateString(), req.params.librarymorecode, resolution)
                 openingmorehoursarr[0] != "" && openingmorehoursarr[0] != null ? ismoreopen = true : ismoreopen = false;
             }
-            !ismoreopen && !ismanned ? libaryclosed = true : libaryclosed = false;
+            !ismoreopen && !ismanned ? libraryclosed = true : libraryclosed = false;
+
             //Dagens första tid
             //Finns det en tid?
             if (openinghoursarr[0] != "" && openinghoursarr[0] != null) {
@@ -1112,9 +1122,13 @@ async function getOpeningHours_json(req, res) {
                 }
             }
 
+            // Kolla om det eventuellt finns stängd period för arean = 1
+            if(!libraryclosed) {
+                libraryclosed = await Model.readClosedPeriod(req.params.system, 1, day.toLocaleDateString("sv-SE"))
+            }
             // Main Library
             if (req.params.librarycode == process.env.MAIN_LIBRARY_CODE) {
-                if (!libaryclosed) {
+                if (!libraryclosed) {
                     if (ismanned) {
                         json += `
                         "date" : "${day.toLocaleDateString(req.params.lang)}",
@@ -1131,7 +1145,7 @@ async function getOpeningHours_json(req, res) {
 
             // Södertälje
             if (req.params.librarycode == process.env.SODERTALJE_LIBRARY_CODE) {
-                if (!libaryclosed) {
+                if (!libraryclosed) {
                     if (ismanned) {
                         json += `
                         "date" : "${day.toLocaleDateString(req.params.lang)}",
