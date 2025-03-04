@@ -1257,58 +1257,6 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
     }
 }
 
-async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolution) {
-    try {
-        let d = new Date(datetocheck)
-        let dayname = d.toLocaleDateString('en-GB', { weekday: 'long' }).toLowerCase();
-        let RoomStartEndDay = await Model.readRoomStartEndDay(system, dayname, room_id);
-        let n_time_slots
-        let morning_slot_seconds
-        if (RoomStartEndDay.length > 0) {
-            for (let i = 0; i < RoomStartEndDay.length; i++) {
-                if (RoomStartEndDay[i]["morningstarts"] == null) {
-                    morning_slot_seconds = false;
-                }
-                n_time_slots = get_n_time_slots(RoomStartEndDay[i]["morningstarts"], RoomStartEndDay[i]["morningstarts_minutes"], RoomStartEndDay[i]["eveningends"], RoomStartEndDay[i]["eveningends_minutes"], resolution);
-                morning_slot_seconds = ((RoomStartEndDay[i]["morningstarts"] * 60) + RoomStartEndDay[i]["morningstarts_minutes"]) * 60;
-            }
-        }
-        let evening_slot_seconds = morning_slot_seconds + ((n_time_slots - 1) * resolution);
-        let openinghour = "";
-        let closehour = "";
-        let openinghourisset = false;
-
-        if (morning_slot_seconds) {
-            for (let s = morning_slot_seconds; s <= evening_slot_seconds; s += resolution) {
-                let slot_free_res = await Model.checkifslotisfree(system, datetocheck, room_id, s);
-                // om inga rader returneras så är sloten ledig
-                if (slot_free_res.length == 0) {
-                    //om fri = spara som öppningstid för dagen
-                    if (openinghourisset == false) {
-                        openinghourisset = true;
-                        let ss = new Date(s * 1000)
-                        openinghour = ss.toLocaleTimeString("sv-SE", { hour: "numeric", minute: "2-digit", timeZone: 'UTC' }) // ex: 8:30
-                    } else {
-                        //fortsätt och hitta den sista fria vars sluttid då blir stängningstid för dagen
-                        let ss = new Date((s + resolution) * 1000)
-                        closehour = ss.toLocaleTimeString("sv-SE", { hour: "numeric", minute: "2-digit", timeZone: 'UTC' }) // ex: 8:30
-                    }
-                }
-            }
-        }
-
-        let hours = []
-        if (openinghourisset) {
-            hours = [openinghour.replace(':', '.'), closehour.replace(':', '.')];
-        }
-        return hours;
-    } catch (err) {
-        console.log(err)
-        return
-    }
-
-}
-
 function truncate(str, max, suffix) {
     return str.length < max ? str : `${str.substr(0, str.substr(0, max - suffix.length).lastIndexOf(' '))}${suffix}`;
 }
