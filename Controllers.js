@@ -170,6 +170,27 @@ async function checkBooking(req, res) {
     }
 }
 
+/**
+ * Skapa en bokning utifrån rum_id, system id etc
+ * @param {*} req 
+ * @param {*} res 
+ */
+async function createBooking(req, res) {
+
+    try {
+        let entry = await Model.createEntry(req.params.system, req.params.room_id, req.body.create_by, req.body.name, req.body.start_time, req.body.end_time)
+        if (entry.success) {
+            res.status(200).json({ valid: true, bookingId: entry.insertId });
+        } else {
+            res.status(200).json({ valid: false, message: "No booking was created." });
+        }
+    }
+    catch (err) {
+        res.status(200).json({ valid: false });
+        console.log(err);
+    }
+}
+
 /*
 Funktion som kvitterar en preliminär bokning utifrån den token som satts på bokningen
 preliminär: status = 4
@@ -1320,6 +1341,7 @@ module.exports = {
     getRoomBookingsForToday,
     validateBooking,
     checkBooking,
+    createBooking,
     confirmBooking,
     getReminderBookings,
     updateEntryConfirmationCode,

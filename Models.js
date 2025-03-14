@@ -19,6 +19,28 @@ const readEntry = (system, id) => {
     })
 };
 
+//Skapa bokning via ID och system 
+const createEntry = (system, room_id, create_by, name, start_time, end_time) => {
+  return new Promise(function (resolve, reject) {
+      const connection = database.createConnection(system);
+      const query = `INSERT INTO mrbs_entry (room_id, create_by, name, start_time, end_time, entry_type, type, status)
+                      VALUES (?, ?, ?, ?, ?, 0, 'I', 0)`;
+      params = [room_id, create_by, name, start_time, end_time]
+      connection.query(query, params, (err, results, fields) => {
+        if (err) {
+          console.error("Error executing query:", err);
+          reject(err.message);
+        } else {
+          connection.end();
+          if (results.affectedRows > 0) {
+            resolve({ success: true, insertId: results.insertId });
+          } else {
+            resolve({ success: false });
+          }
+        }
+      });
+  })
+};
 //Hämta bokning via user, room och system 
 const readEntryByUserAndRoom = (system, user_id, room_id) => {
   return new Promise(function (resolve, reject) {
@@ -529,6 +551,7 @@ const readClosedPeriod = async (system, area_id, date_to_check) => {
 
 module.exports = {
     readEntry,
+    createEntry,
     readEntryByUserAndRoom,
     readEntryByRoomAndCurrentTime,
     readArea,

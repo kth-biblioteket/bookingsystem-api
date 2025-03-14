@@ -46,6 +46,8 @@ apiRoutes.post("/entry/validate/:system/:user_id/:room_id", Controller.validateB
 
 apiRoutes.post("/entry/check/:system/:room_id", Controller.checkBooking)
 
+apiRoutes.post("/entry/create/:system/:room_id", VerifyToken, Controller.createBooking)
+
 apiRoutes.get("/entry/confirm/:system/:confirmation_code", Controller.confirmBooking)
 
 apiRoutes.get("/reminderbookings/:system/:fromtime/:totime/:status/:type", Controller.getReminderBookings)
