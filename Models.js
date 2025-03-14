@@ -31,7 +31,6 @@ const createEntry = (system, room_id, create_by, name, start_time, end_time) => 
           console.error("Error executing query:", err);
           return reject(err.message);
         }
-        connection.end();
         if (results.affectedRows > 0) {
           const insertId = results.insertId;
           const selectQuery = `SELECT * FROM mrbs_entry WHERE id = ?`;
