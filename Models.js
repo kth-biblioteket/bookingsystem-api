@@ -46,8 +46,8 @@ const createEntry = (system, room_id, create_by, name, start_time, end_time) => 
               resolve({ success: false });
             }
           });
-          resolve({ success: true, insertId: results.insertId });
         } else {
+          connection.end();
           resolve({ success: false });
         }
       });
