@@ -180,7 +180,7 @@ async function createBooking(req, res) {
     try {
         let entry = await Model.createEntry(req.params.system, req.params.room_id, req.body.create_by, req.body.name, req.body.start_time, req.body.end_time)
         if (entry.success) {
-            res.status(200).json({ valid: true, bookingId: entry.insertId });
+            res.status(200).json({ valid: true, reservation: entry.entry });
         } else {
             res.status(200).json({ valid: false, message: "No booking was created." });
         }

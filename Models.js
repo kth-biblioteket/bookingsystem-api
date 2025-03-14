@@ -29,14 +29,27 @@ const createEntry = (system, room_id, create_by, name, start_time, end_time) => 
       connection.query(query, params, (err, results, fields) => {
         if (err) {
           console.error("Error executing query:", err);
-          reject(err.message);
+          return reject(err.message);
+        }
+        connection.end();
+        if (results.affectedRows > 0) {
+          const insertId = results.insertId;
+          const selectQuery = `SELECT * FROM mrbs_entry WHERE id = ?`;
+          connection.query(selectQuery, [insertId], (err, rows) => {
+            connection.end();
+            if (err) {
+              console.error("Error fetching new entry:", err);
+              return reject(err.message);
+            }
+            if (rows.length > 0) {
+              resolve({ success: true, entry: rows[0] });
+            } else {
+              resolve({ success: false });
+            }
+          });
+          resolve({ success: true, insertId: results.insertId });
         } else {
-          connection.end();
-          if (results.affectedRows > 0) {
-            resolve({ success: true, insertId: results.insertId });
-          } else {
-            resolve({ success: false });
-          }
+          resolve({ success: false });
         }
       });
   })
