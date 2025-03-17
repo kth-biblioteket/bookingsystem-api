@@ -127,6 +127,28 @@ async function getRoomBookingsForToday(req, res) {
 }
 
 /**
+ * Kontrollera tillgänglighet utifrån rum_id, system id, start_time, end_time
+ * @param {*} req 
+ * @param {*} res 
+ */
+async function checkBookingAvailabiblity(req, res) {
+
+    try {
+        let entry = await Model.readEntryByRoomAndTimestamps(req.params.system, req.params.room_id)
+        if (entry.length > 0 ) {
+            res.status(200).json({ available: true }); 
+        } else {
+            //Det finns en bokning inom intervallet
+            res.status(200).json({ valid: false });
+        }
+    }
+    catch (err) {
+        res.status(200).json({ valid: false });
+        console.log(err);
+    }
+}
+
+/**
  * Valdiera en bokning utifrån user_id, rum_id, system id och aktuell tid
  * @param {*} req 
  * @param {*} res 
@@ -179,6 +201,27 @@ async function createBooking(req, res) {
 
     try {
         let entry = await Model.createEntry(req.params.system, req.params.room_id, req.body.create_by, req.body.name, req.body.start_time, req.body.end_time)
+        if (entry.success) {
+            res.status(200).json({ valid: true, reservation: entry.entry });
+        } else {
+            res.status(200).json({ valid: false, message: "No booking was created." });
+        }
+    }
+    catch (err) {
+        res.status(200).json({ valid: false });
+        console.log(err);
+    }
+}
+
+/**
+ * UPpdatera en bokning utifrån rum_id, system id etc
+ * @param {*} req 
+ * @param {*} res 
+ */
+async function updateBookingEndTime(req, res) {
+
+    try {
+        let entry = await Model.updateEntryEndTime(req.params.system, req.params.entry_id, req.query.end_time)
         if (entry.success) {
             res.status(200).json({ valid: true, reservation: entry.entry });
         } else {
@@ -1339,9 +1382,11 @@ module.exports = {
     readEntry,
     getRoomsAvailability,
     getRoomBookingsForToday,
+    checkBookingAvailabiblity,
     validateBooking,
     checkBooking,
     createBooking,
+    updateBookingEndTime,
     confirmBooking,
     getReminderBookings,
     updateEntryConfirmationCode,

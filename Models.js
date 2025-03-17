@@ -53,6 +53,42 @@ const createEntry = (system, room_id, create_by, name, start_time, end_time) => 
       });
   })
 };
+
+//Uppdatera entry med ny sluttid
+const updateEntryEndTime = (system, entry_id, end_time) => {
+  return new Promise(function (resolve, reject) {
+      const connection = database.createConnection(system);
+      const query = `UPDATE mrbs_entry
+                      SET end_time = ?
+                      WHERE id = ?`;
+      params = [end_time, entry_id]
+      connection.query(query, params, (err, results, fields) => {
+          if (err) {
+            console.error('Error executing query:', err);
+            reject(err.message)
+          }
+          console.log(results)
+          if (results.affectedRows > 0) {
+            const selectQuery = `SELECT * FROM mrbs_entry WHERE id = ?`;
+            connection.query(selectQuery, [entry_id], (err, rows) => {
+              connection.end();
+              if (err) {
+                console.error("Error fetching new entry:", err);
+                return reject(err.message);
+              }
+              if (rows.length > 0) {
+                resolve({ success: true, entry: rows[0] });
+              } else {
+                resolve({ success: false });
+              }
+            });
+          } else {
+            connection.end();
+            resolve({ success: false });
+          }
+        });
+  })
+};
 //Hämta bokning via user, room och system 
 const readEntryByUserAndRoom = (system, user_id, room_id) => {
   return new Promise(function (resolve, reject) {
@@ -60,6 +96,25 @@ const readEntryByUserAndRoom = (system, user_id, room_id) => {
       const query = `SELECT * FROM mrbs_entry
                    WHERE create_by = ? AND room_id = ?`;
       params = [user_id, room_id]
+      connection.query(query, params, (err, results, fields) => {
+          if (err) {
+            console.error('Error executing query:', err);
+            reject(err.message)
+          }
+          const successMessage = "Success"
+          connection.end();
+          resolve(results);
+        });
+  })
+};
+
+//Kontrollera om bokning finns inom intervall via room, system 
+const readEntryByRoomAndTimestamps = (system, room_id, start_time, end_time) => {
+  return new Promise(function (resolve, reject) {
+      const connection = database.createConnection(system);
+      const query = `SELECT * FROM mrbs_entry
+                   WHERE start_time <= ? and end_time >= ? AND room_id = ?`;
+      params = [start_time, end_time, room_id]
       connection.query(query, params, (err, results, fields) => {
           if (err) {
             console.error('Error executing query:', err);
@@ -564,6 +619,7 @@ const readClosedPeriod = async (system, area_id, date_to_check) => {
 module.exports = {
     readEntry,
     createEntry,
+    updateEntryEndTime,
     readEntryByUserAndRoom,
     readEntryByRoomAndCurrentTime,
     readArea,
