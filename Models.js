@@ -58,35 +58,57 @@ const createEntry = (system, room_id, create_by, name, start_time, end_time) => 
 const updateEntryEndTime = (system, entry_id, end_time) => {
   return new Promise(function (resolve, reject) {
       const connection = database.createConnection(system);
+      const selectCurrentEndTimeQuery = `SELECT end_time FROM mrbs_entry WHERE id = ?`;
+
+    connection.query(selectCurrentEndTimeQuery, [entry_id], (err, rows) => {
+      if (err) {
+        console.error("Error fetching current end_time:", err);
+        connection.end();
+        return reject(err.message);
+      }
+
+      if (rows.length === 0) {
+        connection.end();
+        return resolve({ success: false, message: "Entry not found" });
+      }
+
+      const currentEndTime = rows[0].end_time;
+
+      // Kontrollera om den nya sluttiden är senare än den existerande
+      if (end_time >= currentEndTime) {
+        connection.end();
+        return resolve({ success: false, message: "New end_time is later than the current end_time. No update needed." });
+      }
+
       const query = `UPDATE mrbs_entry
                       SET end_time = ?
                       WHERE id = ?`;
       params = [end_time, entry_id]
       connection.query(query, params, (err, results, fields) => {
-          if (err) {
-            console.error('Error executing query:', err);
-            reject(err.message)
-          }
-          console.log(results)
-          if (results.affectedRows > 0) {
-            const selectQuery = `SELECT * FROM mrbs_entry WHERE id = ?`;
-            connection.query(selectQuery, [entry_id], (err, rows) => {
-              connection.end();
-              if (err) {
-                console.error("Error fetching new entry:", err);
-                return reject(err.message);
-              }
-              if (rows.length > 0) {
-                resolve({ success: true, entry: rows[0] });
-              } else {
-                resolve({ success: false });
-              }
-            });
-          } else {
+        if (err) {
+          console.error('Error executing query:', err);
+          reject(err.message)
+        }
+        if (results.affectedRows > 0) {
+          const selectQuery = `SELECT * FROM mrbs_entry WHERE id = ?`;
+          connection.query(selectQuery, [entry_id], (err, rows) => {
             connection.end();
-            resolve({ success: false });
-          }
-        });
+            if (err) {
+              console.error("Error fetching new entry:", err);
+              return reject(err.message);
+            }
+            if (rows.length > 0) {
+              resolve({ success: true, entry: rows[0] });
+            } else {
+              resolve({ success: false });
+            }
+          });
+        } else {
+          connection.end();
+          resolve({ success: false });
+        }
+      });
+    })
   })
 };
 //Hämta bokning via user, room och system 
