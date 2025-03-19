@@ -130,8 +130,8 @@ const readEntryByUserAndRoom = (system, user_id, room_id) => {
   })
 };
 
-//Hämta antal timmar för användarens bokningar för angivet intervall. Via  system, create_by
-const readBookingHoursPerInterval = (system, create_by, interval_start_time, interval_end_time) => {
+//Hämta antal minuter för användarens bokningar för angivet intervall. Via system, create_by
+const readBookingMinutesPerInterval = (system, create_by, interval_start_time, interval_end_time) => {
   return new Promise(function (resolve, reject) {
       const connection = database.createConnection(system);
       const query =  `SELECT SUM((end_time-start_time)/60) as summa				 
