@@ -193,7 +193,7 @@ async function checkBookingPolicy(req, res) {
             let [dayHours] = await Model.readBookingHoursPerInterval(req.params.system, req.body.create_by, intervalCurrentDayStart, intervalCurrentDayEnd)
             const maxHoursDay = area.max_hours_per_day;
             if (dayHours.summa + bookingDuration > maxHoursDay) {
-                return { status: 1, violation: true, policytype: "Max hours per day", bookedhours: dayHours, message: `You have already booked ${dayHours.summa} hours today. The maximum number of hours per day per user is ${maxHoursDay}` }; 
+                return { status: 1, violation: true, policytype: "Max hours per day", bookedhours: dayHours, message: `You have already used ${dayHours.summa} minutes today. The maximum number of minutes per day per user is ${maxHoursDay}` }; 
             }
         }
         
@@ -202,7 +202,7 @@ async function checkBookingPolicy(req, res) {
             let [weekHours] = await Model.readBookingHoursPerInterval(req.params.system, req.body.create_by, intervalCurrentWeekStart, intervalCurrentWeekEnd)
             const maxHoursWeek = area.max_hours_per_week;
             if (weekHours.summa + bookingDuration > maxHoursWeek) {
-                return { status: 1, violation: true, policytype: "Max hours per week", bookedhours: weekHours, message: `You have already booked ${weekHours.summa} hours this week. The maximum number of hours per week per user is ${maxHoursWeek}`}; 
+                return { status: 1, violation: true, policytype: "Max hours per week", bookedhours: weekHours, message: `You have already used ${weekHours.summa} minutes this week. The maximum number of minutes per week per user is ${maxHoursWeek}`}; 
             }
         }
         return { status: 1, violation: false, message: "No policy violations found" };
