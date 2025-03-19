@@ -185,24 +185,24 @@ async function checkBookingPolicy(req, res) {
             return { status: 0, message: 'Area not found' };
         }
 
-        //Den aktuella bokningens längd i timmar
-        const bookingDuration = (req.body.end_time - req.body.start_time) / 3600;
+        //Den aktuella bokningens längd i minuter
+        const bookingDuration = (req.body.end_time - req.body.start_time) / 60;
 
         if(area.max_hours_per_day_enabled) {
             // Kontrollera timmar för dagen
-            let [dayHours] = await Model.readBookingHoursPerInterval(req.params.system, req.body.create_by, intervalCurrentDayStart, intervalCurrentDayEnd)
+            let [dayMinutes] = await Model.readBookingMinutesPerInterval(req.params.system, req.body.create_by, intervalCurrentDayStart, intervalCurrentDayEnd)
             const maxMinutesDay = area.max_hours_per_day * 60;
-            if (dayHours.summa + bookingDuration > maxHoursDay) {
-                return { status: 1, violation: true, policytype: "Max hours per day", bookedhours: dayHours, message: `You have already used ${Math.ceil(dayHours.summa)} minutes today. The maximum number of minutes per day per user is ${maxHoursDay}` }; 
+            if (dayMinutes.summa + bookingDuration > maxMinutesDay) {
+                return { status: 1, violation: true, policytype: "Max hours per day", bookedMinutes: dayMinutes, message: `You have already used ${Math.ceil(dayMinutes.summa)} minutes today. The maximum number of minutes per day per user is ${maxMinutesDay}` }; 
             }
         }
         
         if(area.max_hours_per_week_enabled) {
             // Kontrollera timmar för veckan
-            let [weekHours] = await Model.readBookingHoursPerInterval(req.params.system, req.body.create_by, intervalCurrentWeekStart, intervalCurrentWeekEnd)
+            let [weekMinutes] = await Model.readBookingHoursPerInterval(req.params.system, req.body.create_by, intervalCurrentWeekStart, intervalCurrentWeekEnd)
             const maxMinutesWeek = area.max_hours_per_week * 60;
-            if (weekHours.summa + bookingDuration > maxHoursWeek) {
-                return { status: 1, violation: true, policytype: "Max hours per week", bookedhours: weekHours, message: `You have already used ${Math.ceil(weekHours.summa)} minutes this week. The maximum number of minutes per week per user is ${maxHoursWeek}`}; 
+            if (weekMinutes.summa + bookingDuration > maxHoursWeek) {
+                return { status: 1, violation: true, policytype: "Max hours per week", bookedMinutes: weekMinutes, message: `You have already used ${Math.ceil(weekMinutes.summa)} minutes this week. The maximum number of minutes per week per user is ${maxMinutesWeek}`}; 
             }
         }
         return { status: 1, violation: false, message: "No policy violations found" };
