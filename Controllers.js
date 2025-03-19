@@ -149,6 +149,72 @@ async function checkBookingAvailabiblity(req, res) {
 }
 
 /**
+ * Kontrollera om bokningen bryter mot policies(antal timmar per period)
+ * @param {*} req 
+ * @param {*} res 
+ */
+async function checkBookingPolicy(req, res) {
+    try {
+        const now = new Date();
+
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const day = String(now.getDate()).padStart(2, '0');
+
+        const startOfDay = new Date(`${year}-${month}-${day}T00:00:00`);
+        const intervalCurrentDayStart = Math.floor(startOfDay.getTime() / 1000)
+        const endOfDay = new Date(`${year}-${month}-${day}T23:59:59`);
+        const intervalCurrentDayEnd = Math.floor(endOfDay.getTime() / 1000)
+        
+        const dayOfWeek = now.getDay();
+        const adjustedDay = (dayOfWeek + 6) % 7;
+
+        const monday = new Date(now);
+        monday.setDate(now.getDate() - adjustedDay);
+        monday.setHours(0, 0, 0, 0);
+
+        const sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+        sunday.setHours(23, 59, 59, 999);
+
+        const intervalCurrentWeekStart = Math.floor(monday.getTime() / 1000)
+        const intervalCurrentWeekEnd = Math.floor(sunday.getTime() / 1000)
+
+        let [area] = await Model.readArea(req.params.system, 1)
+        if(!area) {
+            return { status: 0, message: 'Area not found' };
+        }
+
+        //Den aktuella bokningens längd i timmar
+        const bookingDuration = (req.body.end_time - req.body.start_time) / 3600;
+
+        if(area.max_hours_per_day_enabled) {
+            // Kontrollera timmar för dagen
+            let [dayHours] = await Model.readBookingHoursPerInterval(req.params.system, req.body.create_by, intervalCurrentDayStart, intervalCurrentDayEnd)
+            const maxHoursDay = area.max_hours_per_day;
+            if (dayHours.summa + bookingDuration > maxHoursDay) {
+                return { status: 1, violation: true, policytype: "Max hours per day", bookedhours: dayHours, message: "The maximum number of hours per day per user is " + maxHoursDay }; 
+            }
+        }
+        
+        if(area.max_hours_per_week_enabled) {
+            // Kontrollera timmar för veckan
+            let [weekHours] = await Model.readBookingHoursPerInterval(req.params.system, req.body.create_by, intervalCurrentWeekStart, intervalCurrentWeekEnd)
+            const maxHoursWeek = area.max_hours_per_week;
+            if (weekHours.summa + bookingDuration > maxHoursWeek) {
+                return { status: 1, violation: true, policytype: "Max hours per week", bookedhours: weekHours, message: "The maximum number of hours per week per user is " +  maxHoursWeek}; 
+            }
+        }
+        return { status: 1, violation: false, message: "No policy violations found" };
+    }
+    catch (err) {
+        console.log(err);
+        return { status: 0, message: err.message };
+        
+    }
+}
+
+/**
  * Valdiera en bokning utifrån user_id, rum_id, system id och aktuell tid
  * @param {*} req 
  * @param {*} res 
@@ -200,15 +266,25 @@ async function checkBooking(req, res) {
 async function createBooking(req, res) {
 
     try {
-        let entry = await Model.createEntry(req.params.system, req.params.room_id, req.body.create_by, req.body.name, req.body.start_time, req.body.end_time)
-        if (entry.success) {
-            res.status(200).json({ valid: true, reservation: entry.entry });
+        // Bryter bokningen mot några regler?
+        let violation = await checkBookingPolicy(req, res);
+        if (violation.status == 0) {
+            return res.status(500).json({valid: false, message: violation.message });
         } else {
-            res.status(200).json({ valid: false, message: "No booking was created." });
+            if (violation.violation) {
+                return res.status(200).json({ valid: false, message: violation.message });
+            } else {
+                let entry = await Model.createEntry(req.params.system, req.params.room_id, req.body.create_by, req.body.name, req.body.start_time, req.body.end_time)
+                if (entry.success) {
+                    res.status(200).json({ valid: true, reservation: entry.entry });
+                } else {
+                    res.status(200).json({ valid: false, message: "No booking was created." });
+                }
+            }
         }
     }
     catch (err) {
-        res.status(200).json({ valid: false });
+        res.status(500).json({valid: false, message: err.message });
         console.log(err);
     }
 }
@@ -1383,6 +1459,7 @@ module.exports = {
     getRoomsAvailability,
     getRoomBookingsForToday,
     checkBookingAvailabiblity,
+    checkBookingPolicy,
     validateBooking,
     checkBooking,
     createBooking,

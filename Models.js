@@ -130,6 +130,44 @@ const readEntryByUserAndRoom = (system, user_id, room_id) => {
   })
 };
 
+//Hämta antal timmar för användarens bokningar för angivet intervall. Via  system, create_by
+const readBookingHoursPerInterval = (system, create_by, interval_start_time, interval_end_time) => {
+  return new Promise(function (resolve, reject) {
+      const connection = database.createConnection(system);
+      const query =  `SELECT summa
+                      FROM (
+                        SELECT cast((end_time-start_time)/3600 AS UNSIGNED) as timmar, 
+                        SUM((end_time-start_time)/3600) as summa				 
+                        FROM mrbs_entry E, mrbs_room R
+                                WHERE E.start_time<?
+                                AND E.end_time>?
+                                AND E.create_by=?
+                                AND E.room_id=R.id
+                                AND R.disabled=0 
+                                AND type != 'C'
+                                GROUP BY cast((end_time-start_time)/3600 AS UNSIGNED) 
+                        WITH ROLLUP
+                        HAVING timmar is null
+                      )
+                      t1`;
+      params = [interval_end_time, interval_start_time, create_by]
+      connection.query(query, params, (err, results, fields) => {
+          if (err) {
+            console.error('Error executing query:', err);
+            reject(err.message)
+          }
+          connection.end();
+          if (results && results.length > 0) {
+            // If rows are returned, resolve with the results
+            resolve(results);
+          } else {
+            // If no rows are returned, resolve with a default value where summa is 0
+            resolve([{ summa: 0 }]);
+          }
+        });
+  })
+};
+
 //Kontrollera om bokning finns inom intervall via room, system 
 const readEntryByRoomAndTimestamps = (system, room_id, start_time, end_time) => {
   return new Promise(function (resolve, reject) {
@@ -643,6 +681,7 @@ module.exports = {
     createEntry,
     updateEntryEndTime,
     readEntryByUserAndRoom,
+    readBookingHoursPerInterval,
     readEntryByRoomAndCurrentTime,
     readArea,
     readRooms,
