@@ -134,22 +134,14 @@ const readEntryByUserAndRoom = (system, user_id, room_id) => {
 const readBookingHoursPerInterval = (system, create_by, interval_start_time, interval_end_time) => {
   return new Promise(function (resolve, reject) {
       const connection = database.createConnection(system);
-      const query =  `SELECT summa
-                      FROM (
-                        SELECT cast((end_time-start_time)/3600 AS UNSIGNED) as timmar, 
-                        SUM((end_time-start_time)/3600) as summa				 
-                        FROM mrbs_entry E, mrbs_room R
-                                WHERE E.start_time<?
-                                AND E.end_time>?
-                                AND E.create_by=?
-                                AND E.room_id=R.id
-                                AND R.disabled=0 
-                                AND type != 'C'
-                                GROUP BY cast((end_time-start_time)/3600 AS UNSIGNED) 
-                        WITH ROLLUP
-                        HAVING timmar is null
-                      )
-                      t1`;
+      const query =  `SELECT SUM((end_time-start_time)/60) as summa				 
+                        FROM mrbs_entry E
+                        JOIN mrbs_room R ON E.room_id = R.id
+                        WHERE E.start_time<?
+                          AND E.end_time>?
+                          AND E.create_by=?
+                          AND R.disabled=0 
+                          AND type != 'C'`;
       params = [interval_end_time, interval_start_time, create_by]
       connection.query(query, params, (err, results, fields) => {
           if (err) {
