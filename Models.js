@@ -673,7 +673,7 @@ module.exports = {
     createEntry,
     updateEntryEndTime,
     readEntryByUserAndRoom,
-    readBookingHoursPerInterval,
+    readBookingMinutesPerInterval,
     readEntryByRoomAndCurrentTime,
     readArea,
     readRooms,
