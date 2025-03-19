@@ -199,9 +199,9 @@ async function checkBookingPolicy(req, res) {
         
         if(area.max_hours_per_week_enabled) {
             // Kontrollera timmar för veckan
-            let [weekMinutes] = await Model.readBookingHoursPerInterval(req.params.system, req.body.create_by, intervalCurrentWeekStart, intervalCurrentWeekEnd)
+            let [weekMinutes] = await Model.readBookingMinutesPerInterval(req.params.system, req.body.create_by, intervalCurrentWeekStart, intervalCurrentWeekEnd)
             const maxMinutesWeek = area.max_hours_per_week * 60;
-            if (weekMinutes.summa + bookingDuration > maxHoursWeek) {
+            if (weekMinutes.summa + bookingDuration > maxMinutesWeek) {
                 return { status: 1, violation: true, policytype: "Max hours per week", bookedMinutes: weekMinutes, message: `You have already used ${Math.ceil(weekMinutes.summa)} minutes this week. The maximum number of minutes per week per user is ${maxMinutesWeek}`}; 
             }
         }
