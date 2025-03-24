@@ -193,7 +193,7 @@ async function checkBookingPolicy(req, res) {
             let [dayMinutes] = await Model.readBookingMinutesPerInterval(req.params.system, req.body.create_by, intervalCurrentDayStart, intervalCurrentDayEnd)
             const maxMinutesDay = area.max_hours_per_day * 60;
             if (dayMinutes.summa + bookingDuration > maxMinutesDay) {
-                return { status: 1, violation: true, policytype: "Max hours per day", bookedMinutes: dayMinutes, message: `You have already used ${Math.ceil(dayMinutes.summa)} minutes today. The maximum number of minutes per day per user is ${maxMinutesDay}` }; 
+                return { status: 1, violation: true, policytype: "Max hours per day", bookedMinutes: dayMinutes, message: `You have reached the limit for minutes(${maxMinutesDay}) used per user per day.` }; 
             }
         }
         
@@ -202,7 +202,7 @@ async function checkBookingPolicy(req, res) {
             let [weekMinutes] = await Model.readBookingMinutesPerInterval(req.params.system, req.body.create_by, intervalCurrentWeekStart, intervalCurrentWeekEnd)
             const maxMinutesWeek = area.max_hours_per_week * 60;
             if (weekMinutes.summa + bookingDuration > maxMinutesWeek) {
-                return { status: 1, violation: true, policytype: "Max hours per week", bookedMinutes: weekMinutes, message: `You have already used ${Math.ceil(weekMinutes.summa)} minutes this week. The maximum number of minutes per week per user is ${maxMinutesWeek}`}; 
+                return { status: 1, violation: true, policytype: "Max hours per week", bookedMinutes: weekMinutes, message: `You have reached the limit for minutes(${maxMinutesWeek}) used per user per week.`}; 
             }
         }
         return { status: 1, violation: false, message: "No policy violations found" };
@@ -301,7 +301,7 @@ async function updateBookingEndTime(req, res) {
         if (entry.success) {
             res.status(200).json({ valid: true, reservation: entry.entry });
         } else {
-            res.status(200).json({ valid: false, message: "No booking was created." });
+            res.status(200).json({ valid: false, message: "No booking was updated." });
         }
     }
     catch (err) {
