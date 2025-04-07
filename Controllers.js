@@ -300,7 +300,7 @@ async function createBooking(req, res) {
             }
         }
 
-        let entry = await Model.createEntry(req.params.system, req.params.room_id, req.body.create_by, req.body.name, req.body.start_time, req.body.end_time)
+        let entry = await Model.createEntry(req.params.system, req.params.room_id, req.body.create_by, req.body.name, start_time, end_time)
         if (entry.success) {
             res.status(200).json({ valid: true, reservation: entry.entry });
         } else {
