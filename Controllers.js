@@ -267,7 +267,7 @@ async function createBooking(req, res) {
 
     try {
         // Bryter bokningen mot några regler?
-        let violation = await checkBookingPolicy(req, res);
+        //let violation = await checkBookingPolicy(req, res);
 
         let [area] = await Model.readArea(req.params.system, 1)
         if(!area) {
@@ -294,8 +294,9 @@ async function createBooking(req, res) {
             const maxMinutesDay = area.max_hours_per_day * 60;
             //Den aktuella bokningens längd i minuter
             const bookingDuration = (req.body.end_time - req.body.start_time) / 60;
-            // Om den nya bokningen överskrider max_hours_per_day så ska den bokningen förkortas 
-            if ((dayMinutes.summa + bookingDuration) > maxMinutesDay) {
+            // Om den nya bokningen överskrider max_hours_per_day så ska den bokningen förkortas
+            // om inte förbrukad till redan är uppnådd
+            if ((dayMinutes.summa + bookingDuration) > maxMinutesDay && maxMinutesDay - dayMinutes.summa >= 0) {
                 end_time = req.body.start_time + (maxMinutesDay - dayMinutes.summa) * 60;
             }
         }
