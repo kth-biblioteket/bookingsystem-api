@@ -268,6 +268,45 @@ async function createBooking(req, res) {
     try {
         // Bryter bokningen mot några regler?
         let violation = await checkBookingPolicy(req, res);
+
+        let [area] = await Model.readArea(req.params.system, 1)
+        if(!area) {
+            return { status: 0, message: 'Area not found' };
+        }
+
+        const now = new Date();
+
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const day = String(now.getDate()).padStart(2, '0');
+
+        const startOfDay = new Date(`${year}-${month}-${day}T00:00:00`);
+        const intervalCurrentDayStart = Math.floor(startOfDay.getTime() / 1000)
+        const endOfDay = new Date(`${year}-${month}-${day}T23:59:59`);
+        const intervalCurrentDayEnd = Math.floor(endOfDay.getTime() / 1000)
+
+        let end_time = req.body.end_time;
+        let start_time = req.body.start_time;
+        if(area.max_hours_per_day_enabled) {
+            // Kontrollera om och i så fall hur många minuter som användaren redan har bokat. Se till att bokningen blir = max_hours_per_day
+            // t ex användare har använt 23 minuter. Max_hours_per_day är 120 minuter. Den nya bokningen blir då 97 minuter.
+            let [dayMinutes] = await Model.readBookingMinutesPerInterval(req.params.system, req.body.create_by, intervalCurrentDayStart, intervalCurrentDayEnd)
+            const maxMinutesDay = area.max_hours_per_day * 60;
+            //Den aktuella bokningens längd i minuter
+            const bookingDuration = (req.body.end_time - req.body.start_time) / 60;
+            // Om den nya bokningen överskrider max_hours_per_day så ska den bokningen förkortas 
+            if ((dayMinutes.summa + bookingDuration) > maxMinutesDay) {
+                end_time = req.body.start_time + (maxMinutesDay - dayMinutes.summa) * 60;
+            }
+        }
+
+        let entry = await Model.createEntry(req.params.system, req.params.room_id, req.body.create_by, req.body.name, req.body.start_time, req.body.end_time)
+        if (entry.success) {
+            res.status(200).json({ valid: true, reservation: entry.entry });
+        } else {
+            res.status(200).json({ valid: false, message: "No booking was created." });
+        }
+        /*
         if (violation.status == 0) {
             return res.status(500).json({valid: false, message: violation.message });
         } else {
@@ -282,6 +321,7 @@ async function createBooking(req, res) {
                 }
             }
         }
+        */
     }
     catch (err) {
         res.status(500).json({valid: false, message: err.message });
