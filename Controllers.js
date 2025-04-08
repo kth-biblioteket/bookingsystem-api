@@ -291,14 +291,14 @@ async function createBooking(req, res) {
             // Kontrollera om och i så fall hur många minuter som användaren redan har bokat. Se till att bokningen blir = max_hours_per_day
             // t ex användare har använt 23 minuter. Max_hours_per_day är 120 minuter. Den nya bokningen blir då 97 minuter.
             let [dayMinutes] = await Model.readBookingMinutesPerInterval(req.params.system, req.body.create_by, intervalCurrentDayStart, intervalCurrentDayEnd)
-            console.log(dayMinutes)
+            const currentDayMinutes = dayMinutes?.summa || 0;
             const maxMinutesDay = area.max_hours_per_day * 60;
             //Den aktuella bokningens längd i minuter
             const bookingDuration = (req.body.end_time - req.body.start_time) / 60;
             // Om den nya bokningen överskrider max_hours_per_day så ska den bokningen förkortas
             // om inte förbrukad tid redan är uppnådd
-            if ((dayMinutes.summa + bookingDuration) > maxMinutesDay && maxMinutesDay - dayMinutes.summa > 0) {
-                end_time = req.body.start_time + (maxMinutesDay - dayMinutes.summa) * 60;
+            if ((currentDayMinutes + bookingDuration) > maxMinutesDay && maxMinutesDay - currentDayMinutes > 0) {
+                end_time = req.body.start_time + (maxMinutesDay - currentDayMinutes) * 60;
             } else {
                 return res.status(200).json({valid: false, message: `You have reached the limit for minutes(${maxMinutesDay}) used per user per day.` });
             }
