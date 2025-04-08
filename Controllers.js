@@ -297,11 +297,14 @@ async function createBooking(req, res) {
             const bookingDuration = (req.body.end_time - req.body.start_time) / 60;
             // Om den nya bokningen överskrider max_hours_per_day så ska den bokningen förkortas
             // om inte förbrukad tid redan är uppnådd
-            console.log(currentDayMinutes)
-            if ((currentDayMinutes + bookingDuration) > maxMinutesDay && maxMinutesDay - currentDayMinutes > 0) {
-                end_time = req.body.start_time + (maxMinutesDay - currentDayMinutes) * 60;
+            if (currentDayMinutes > 0 ) {
+                if ((currentDayMinutes + bookingDuration) > maxMinutesDay && maxMinutesDay - currentDayMinutes > 0) {
+                    end_time = req.body.start_time + (maxMinutesDay - currentDayMinutes) * 60;
+                } else {
+                    return res.status(200).json({valid: false, message: `You have reached the limit for minutes(${maxMinutesDay}) used per user per day.` });
+                }
             } else {
-                return res.status(200).json({valid: false, message: `You have reached the limit for minutes(${maxMinutesDay}) used per user per day.` });
+                end_time = req.body.start_time + bookingDuration * 60
             }
         }
 
