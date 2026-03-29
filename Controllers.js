@@ -1302,7 +1302,7 @@ async function getOpeningHours_json(req, res) {
                         "date" : "${day.toLocaleDateString(req.params.lang)}",
                         "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
                         "hours" : "${firsthour}–${lasthour}${moreopen ? '*' : ''}",
-                        "hoursdepracated" : "${firsthour.replaceAll('.00', '')}${moreopen ? '*' : ''}–${lasthour.replaceAll('.00', '')}"`,
+                        "hoursdepracated" : "${firsthour.replaceAll('.00', '')}${moreopen ? '*' : ''}–${lasthour.replaceAll('.00', '')}"`
                     }
                 } else {
                     json += `
@@ -1319,7 +1319,7 @@ async function getOpeningHours_json(req, res) {
                     "date" : "${day.toLocaleDateString(req.params.lang)}",
                     "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
                     "hours" : "${firsthour}–${lasthour}",
-                    "hoursdepracated" : "${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}"`,
+                    "hoursdepracated" : "${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}"`
 
                 } else {
                     json += `
