@@ -1100,8 +1100,8 @@ async function getOpeningHours_json(req, res) {
        
         
         //Skapa html som kan hämtas och visas på öppettidersidan i polopoly
-        let week_start_date = formatDateForHTMLWeekDays(new Date(week_start))
-        let week_end_date = formatDateForHTMLWeekDays(new Date(week_end))
+        let week_start_date = formatDateForHTMLWeekDays(new Date(week_start), lang)
+        let week_end_date = formatDateForHTMLWeekDays(new Date(week_end), lang)
 
         //Dagens öppettider
         let todaysdate = new Date();
@@ -1183,26 +1183,6 @@ async function getOpeningHours_json(req, res) {
             } else {
                 opentodaymoretext_start = ""
                 opentodayhours_start = closedtext
-                opentodayhours = closedtext
-                opentoday = false
-            }
-        }
-
-        // Södertälje
-        if (req.params.librarycode == process.env.SODERTALJE_LIBRARY_CODE) {
-            if (!libraryclosed) {
-                if (ismanned) {
-                    opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
-                    opentodaymoretext_start = `${mannedtext_startpage} ${openinghoursarr[0].replaceAll('.00', '')}–${openinghoursarr[1].replaceAll('.00', '')}${openinfotext_2_startpage}`
-                    opentodayhours = `${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')} (${mannedtext} ${openinghoursarr[0].replaceAll('.00', '')}–${openinghoursarr[1].replaceAll('.00', '')})`
-                } else {
-                    opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
-                    opentodaymoretext_start = `${unmannedtext_startpage} ${openinfotext_2_startpage}`
-                    opentodayhours = `${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')} (${unmannedtext})`
-                }
-            } else {
-                opentodayhours_start = closedtext
-                opentodaymoretext_start = ""
                 opentodayhours = closedtext
                 opentoday = false
             }
@@ -1331,28 +1311,6 @@ async function getOpeningHours_json(req, res) {
                 }
             }
 
-            // Södertälje
-            if (req.params.librarycode == process.env.SODERTALJE_LIBRARY_CODE) {
-                if (!libraryclosed) {
-                    if (ismanned) {
-                        json += `
-                        "date" : "${day.toLocaleDateString(req.params.lang)}",
-                        "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
-                        "hours" : "${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')} (${mannedtext} ${openinghoursarr[0].replaceAll('.00', '')}–${openinghoursarr[1].replaceAll('.00', '')})"`
-                    } else {
-                        json += `
-                        "date" : "${day.toLocaleDateString(req.params.lang)}",
-                        "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
-                        "hours" : "${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')}${moreopen ? '*' : ''} (${unmannedtext})"`
-                    }
-                } else {
-                    json += `
-                    "date" : "${day.toLocaleDateString(req.params.lang)}",
-                    "name" : "${day.toLocaleDateString(req.params.lang, { weekday: 'long' })}",
-                    "hours" : "${closedtext}"`
-                }
-            }
-
             // Chat
             if (req.params.librarycode == process.env.CHAT_CODE) {
                 if (!libraryclosed) {
@@ -1463,11 +1421,23 @@ function truncate(str, max, suffix) {
     return str.length < max ? str : `${str.substr(0, str.substr(0, max - suffix.length).lastIndexOf(' '))}${suffix}`;
 }
 
-function formatDateForHTMLWeekDays(date) {
+function formatDateForHTMLWeekDays_depracated(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${day}/${month}`;
+}
+
+function formatDateForHTMLWeekDays(date, lang = 'sv') {
+    const locale = (lang === 'en') ? 'en-US' : 'sv-SE';
+    
+    const options = { 
+        weekday: 'long', 
+        day: 'numeric', 
+        month: 'long' 
+    };
+    
+    return date.toLocaleDateString(locale, options);
 }
 
 function formatDate(date) {
