@@ -1443,7 +1443,7 @@ function formatDateForHTMLWeekDays(date, lang = 'sv') {
     
     let dateString = date.toLocaleDateString(locale, options);
     
-    return dateString.replace(/,/g, '').toLowerCase();
+    return dateString.replace(/,/g, '')
 }
 
 function formatDate(date) {
