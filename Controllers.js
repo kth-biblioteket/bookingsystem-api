@@ -1433,7 +1433,7 @@ function formatDateForHTMLWeekDays_depracated(date) {
 }
 
 function formatDateForHTMLWeekDays(date, lang = 'sv') {
-    const locale = (lang === 'en') ? 'en-US' : 'sv-SE';
+    const locale = (lang === 'en') ? 'en-GB' : 'sv-SE';
     
     const options = { 
         weekday: 'long', 
