@@ -1441,7 +1441,9 @@ function formatDateForHTMLWeekDays(date, lang = 'sv') {
         month: 'long' 
     };
     
-    return date.toLocaleDateString(locale, options);
+    let dateString = date.toLocaleDateString(locale, options);
+    
+    return dateString.replace(/,/g, '').toLowerCase();
 }
 
 function formatDate(date) {
