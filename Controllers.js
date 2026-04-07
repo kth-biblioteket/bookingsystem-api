@@ -583,8 +583,8 @@ async function getOpeningHours_html_new(req, res) {
                     </div>`
         for (var day = from; day <= to; day.setDate(day.getDate() + 1)) {
             moreopen = false;
-            openinghoursarr = await getNonDefaultOpeninghours(req.params.system, day.toLocaleDateString(), req.params.librarycode, resolution)
-            openingmorehoursarr = await getNonDefaultOpeninghours(req.params.system, day.toLocaleDateString(), req.params.librarymorecode, resolution)
+            openinghoursarr = await getNonDefaultOpeninghours(req.params.system, day.toLocaleDateString(), req.params.librarycode, resolution, lang)
+            openingmorehoursarr = await getNonDefaultOpeninghours(req.params.system, day.toLocaleDateString(), req.params.librarymorecode, resolution, lang)
             openinghoursarr[0] != "" && openinghoursarr[0] != null ? ismanned = true : ismanned = false;
             openingmorehoursarr[0] != "" && openingmorehoursarr[0] != null ? ismoreopen = true : ismoreopen = false;
             !ismoreopen && !ismanned ? libaryclosed = true : libaryclosed = false;
@@ -777,7 +777,7 @@ async function getOpeningHours_html(req, res) {
 
         if (roomcloseddays.length > 0) {
             for (let i = 0; i < roomcloseddays.length; i++) {
-                let non_default_openinghours = await getNonDefaultOpeninghours(req.params.system, roomcloseddays[i].datetoget, req.params.librarycode, resolution)
+                let non_default_openinghours = await getNonDefaultOpeninghours(req.params.system, roomcloseddays[i].datetoget, req.params.librarycode, resolution, lang)
                 let d = new Date(roomcloseddays[i].datetoget)
                 let dayname = d.toLocaleDateString('en-GB', { weekday: 'long' }).toLowerCase();
                 if (non_default_openinghours.length == 0) {
@@ -811,7 +811,7 @@ async function getOpeningHours_html(req, res) {
         let roomcloseddaysmore = await Model.readRoomClosedDays(req.params.system, req.params.librarymorecode, week_start, week_end)
         if (roomcloseddaysmore.length > 0) {
             for (let i = 0; i < roomcloseddaysmore.length; i++) {
-                let non_default_openinghours = await getNonDefaultOpeninghours(req.params.system, roomcloseddaysmore[i].datetoget, req.params.librarymorecode, resolution)
+                let non_default_openinghours = await getNonDefaultOpeninghours(req.params.system, roomcloseddaysmore[i].datetoget, req.params.librarymorecode, resolution, lang)
                 let d = new Date(roomcloseddaysmore[i].datetoget)
                 let dayname = d.toLocaleDateString('en-GB', { weekday: 'long' }).toLowerCase();
                 if (non_default_openinghours.length == 0) {
@@ -907,8 +907,8 @@ async function getOpeningHours_html_start(req, res) {
         let firsthour = "";
         let lasthour = "";
 
-        let openinghoursarr = await getNonDefaultOpeninghours(req.params.system, req.params.datetoget, req.params.librarycode, resolution)
-        let openingmorehoursarr = await getNonDefaultOpeninghours(req.params.system, req.params.datetoget, req.params.librarymorecode, resolution)
+        let openinghoursarr = await getNonDefaultOpeninghours(req.params.system, req.params.datetoget, req.params.librarycode, resolution, lang)
+        let openingmorehoursarr = await getNonDefaultOpeninghours(req.params.system, req.params.datetoget, req.params.librarymorecode, resolution, lang)
         openinghoursarr[0] != "" && openinghoursarr[0] != null ? ismanned = true : ismanned = false;
         openingmorehoursarr[0] != "" && openingmorehoursarr[0] != null ? ismoreopen = true : ismoreopen = false;
         !ismoreopen && !ismanned ? libaryclosed = true : libaryclosed = false;
@@ -1111,10 +1111,10 @@ async function getOpeningHours_json(req, res) {
         let firsthour;
         let lasthour;
         moreopen = false;
-        openinghoursarr = await getNonDefaultOpeninghours(req.params.system, todaysdate.toLocaleDateString(), req.params.librarycode, resolution)
+        openinghoursarr = await getNonDefaultOpeninghours(req.params.system, todaysdate.toLocaleDateString(), req.params.librarycode, resolution, lang)
         openinghoursarr[0] != "" && openinghoursarr[0] != null ? ismanned = true : ismanned = false;
         if(req.params.librarymorecode != 0) {
-            openingmorehoursarr = await getNonDefaultOpeninghours(req.params.system, todaysdate.toLocaleDateString(), req.params.librarymorecode, resolution)
+            openingmorehoursarr = await getNonDefaultOpeninghours(req.params.system, todaysdate.toLocaleDateString(), req.params.librarymorecode, resolution, lang)
             openingmorehoursarr[0] != "" && openingmorehoursarr[0] != null ? ismoreopen = true : ismoreopen = false;
         }
 
@@ -1241,10 +1241,10 @@ async function getOpeningHours_json(req, res) {
             }
             dayindex++
             moreopen = false;
-            openinghoursarr = await getNonDefaultOpeninghours(req.params.system, day.toLocaleDateString(), req.params.librarycode, resolution)
+            openinghoursarr = await getNonDefaultOpeninghours(req.params.system, day.toLocaleDateString(), req.params.librarycode, resolution, lang)
             openinghoursarr[0] != "" && openinghoursarr[0] != null ? ismanned = true : ismanned = false;
             if(req.params.librarymorecode != 0) {
-                openingmorehoursarr = await getNonDefaultOpeninghours(req.params.system, day.toLocaleDateString(), req.params.librarymorecode, resolution)
+                openingmorehoursarr = await getNonDefaultOpeninghours(req.params.system, day.toLocaleDateString(), req.params.librarymorecode, resolution, lang)
                 openingmorehoursarr[0] != "" && openingmorehoursarr[0] != null ? ismoreopen = true : ismoreopen = false;
             }
             !ismoreopen && !ismanned ? libraryclosed = true : libraryclosed = false;
@@ -1373,8 +1373,14 @@ async function getOpeningHours_json(req, res) {
     }
 }
 
-async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolution) {
+async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolution, lang) {
     try {
+        let locale
+        if (lang === 'en') {
+            locale = 'en-GB'
+        } else {
+            locale = 'sv-SE'
+        }
         let d = new Date(datetocheck)
         let dayname = d.toLocaleDateString('en-GB', { weekday: 'long' }).toLowerCase();
         let RoomStartEndDay = await Model.readRoomStartEndDay(system, dayname, room_id);
@@ -1403,11 +1409,11 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
                     if (openinghourisset == false) {
                         openinghourisset = true;
                         let ss = new Date(s * 1000)
-                        openinghour = ss.toLocaleTimeString("sv-SE", { hour: "numeric", minute: "2-digit", timeZone: 'UTC' }) // ex: 8:30
+                        openinghour = ss.toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit", timeZone: 'UTC' }) // ex: 8:30
                     } else {
                         //fortsätt och hitta den sista fria vars sluttid då blir stängningstid för dagen
                         let ss = new Date((s + resolution) * 1000)
-                        closehour = ss.toLocaleTimeString("sv-SE", { hour: "numeric", minute: "2-digit", timeZone: 'UTC' }) // ex: 8:30
+                        closehour = ss.toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit", timeZone: 'UTC' }) // ex: 8:30
                     }
                 }
             }
@@ -1415,7 +1421,11 @@ async function getNonDefaultOpeninghours(system, datetocheck, room_id, resolutio
 
         let hours = []
         if (openinghourisset) {
-            hours = [openinghour.replace(':', '.'), closehour.replace(':', '.')];
+            if(lang === 'sv') {
+                hours = [openinghour.replace(':', '.'), closehour.replace(':', '.')];
+            } else {
+                hours = [openinghour, closehour];
+            }
         }
         return hours;
     } catch (err) {
