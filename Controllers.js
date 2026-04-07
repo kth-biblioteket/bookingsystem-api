@@ -1179,7 +1179,7 @@ async function getOpeningHours_json(req, res) {
                     } else {
                         opentodaymoretext_start = ""
                     }
-                    opentodayhours = `${firsthour.replaceAll('.00', '')}${moreopen ? '*' : ''}–${lasthour.replaceAll('.00', '')}`;
+                    opentodayhours = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}${moreopen ? '*' : ''}`;
                 }
             } else {
                 opentodaymoretext_start = ""
