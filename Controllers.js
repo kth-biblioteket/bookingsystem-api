@@ -1172,7 +1172,8 @@ async function getOpeningHours_json(req, res) {
         if (req.params.librarycode == process.env.MAIN_LIBRARY_CODE) {
             if (!libraryclosed) {
                 if (ismanned) {
-                    opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
+                    //opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
+                    opentodayhours_start = `${firsthour}–${lasthour}`
                     if (moreopen) {
                         opentodaymoretext_start = `${openinfotext_1_startpage} ${openingmorehoursarr[0].replaceAll('.00', '')}–${openingmorehoursarr[1].replaceAll('.00', '')} ${openinfotext_2_startpage}`
                     } else {
@@ -1191,7 +1192,8 @@ async function getOpeningHours_json(req, res) {
         //Chat
         if (req.params.librarycode == process.env.CHAT_CODE) {
             if (!libraryclosed) {
-                opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
+                //opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
+                opentodayhours_start = `${firsthour}–${lasthour}`
                 opentodaymoretext_start = ""
                 opentodayhours = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`;
             } else {
@@ -1204,7 +1206,8 @@ async function getOpeningHours_json(req, res) {
         //Phone
         if (req.params.librarycode == process.env.PHONE_CODE) {
             if (!libraryclosed) {
-                opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
+                //opentodayhours_start = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`
+                opentodayhours_start = `${firsthour}–${lasthour}`
                 opentodaymoretext_start = ""
                 opentodayhours = `${firsthour.replaceAll('.00', '')}–${lasthour.replaceAll('.00', '')}`;
             } else {
